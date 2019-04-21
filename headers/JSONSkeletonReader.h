@@ -1,0 +1,16 @@
+#ifndef SKELETON_READER_H
+#define SKELETON_READER_H
+
+#include "../extern/json.hpp"
+#include "Skeleton.h"
+
+class JSONSkeletonReader
+{
+
+    static const std::string FILEPATH;
+
+public:
+    static Skeleton2D readFromFile(std::string const & filename, float scaleFactor=1.0f);
+};
+
+#endif // SKELETON_READER_H

@@ -110,93 +110,12 @@ struct SkeletonNode
     }
 };
 
-/*struct SkeletonBeam
-{
-    SkeletonNode& node1;
-    SkeletonNode& node2;
-
-    char spriteAxis;
-    float distance;
-
-    SkeletonBeam(SkeletonNode& _n1,
-                 SkeletonNode& _n2,
-                 char const & _spriteAxis) :
-                node1{_n1}, node2{_n2}, spriteAxis{_spriteAxis}
-    {
-        distance = sqrtf(Math::square((node1.position - node2.position)));
-    }
-
-
-    enum Quadrant
-    {
-        UL,
-        UR,
-        LL,
-        LR
-    };
-
-    static int convertQuadrantToSgn(Quadrant q)
-    {
-        if(q==Quadrant::UL || q==Quadrant::LL)
-            return -1;
-
-        return 1;
-    }
-
-    static Quadrant getVectorQuadrant(sf::Vector2f const & xAxis,
-                               sf::Vector2f const & yAxis,
-                               sf::Vector2f const & direction)
-    {
-        float xProjection = Math::dot(xAxis, direction);
-        float yProjection = Math::dot(yAxis, direction);
-
-        bool isInUpperHalf = yProjection > 0.0f;
-        bool isInRightHalf = xProjection > 0.0f;
-
-        if(isInRightHalf && isInUpperHalf)
-            return Quadrant::UR;
-        if(isInRightHalf && !isInUpperHalf)
-            return Quadrant::LR;
-        if(!isInRightHalf && isInUpperHalf)
-            return Quadrant::UL;
-
-        return Quadrant::LL;
-    }
-
-    static float getBeamAngle(SkeletonNode& node1,
-                              SkeletonNode& node2,
-                              SkeletonNode& node3)
-    {
-        sf::Vector2f d1 = node2.position -
-                          node1.position;
-        sf::Vector2f d2 = node3.position -
-                          node2.position;
-        sf::Vector2f d1hat  = Math::norm(d1);
-        sf::Vector2f od1hat = Math::orthogonal(d1hat, 1.0f);
-        sf::Vector2f d2hat  = Math::norm(d2);
-
-        Quadrant nodeQuadrant = getVectorQuadrant(od1hat, d1hat, d2hat);
-
-        float angleCosine = Math::dot(d1hat, d2hat);
-
-        if(angleCosine > 1.0f) angleCosine = 1.0f;
-        if(angleCosine < -1.0f) angleCosine = -1.0f;
-
-        return convertQuadrantToSgn(nodeQuadrant)*acosf(angleCosine);
-    }
-
-    static float getBeamAngle(SkeletonBeam& beam1,
-                              SkeletonBeam& beam2)
-    {
-        return getBeamAngle(beam1.node1, beam2.node1, beam2.node2);
-    }
-};*/
-
 class Skeleton2DChain
 {
     std::vector<SkeletonNode > nodes;
 
-    sf::Vector2f offset = {0.0f, 0.0f};
+    sf::Vector2f absOffset = {0.0f, 0.0f};
+    sf::Vector2f relOffset = {0.0f, 0.0f};
     bool linkedToParent = false;
     float baseNodeAngle = 0.0f;
 
@@ -206,18 +125,12 @@ class Skeleton2DChain
         Backward
     };
 
-    /*void constrainToAngularRange(SkeletonBeam& firstBeam,
-                                 SkeletonBeam& secondBeam,
-                                 Direction dir = Direction::Forward);*/
-
     bool constrainToAngularRange(SkeletonNode& node1,
                                  SkeletonNode& node2,
                                  SkeletonNode& node3);
 
     void constrainToAngularRange(SkeletonNode& node1,
                                  SkeletonNode& node2);
-
-    //void constrainToAngularRange(SkeletonBeam& beam);
 
     void inverseK(sf::Vector2f const & t,
                   int baseIndex,
@@ -234,7 +147,8 @@ public:
                     sf::Vector2f const & _offset = {0.0f, 0.0f});
     void draw(sf::RenderWindow& window);
 
-    void setTarget(sf::Vector2f const & t, int targetIndex = -1);
+    void setTarget(sf::Vector2f const & t, int targetIndex = -1,
+                   bool applyOffset = false, bool setOffset = false);
 
     void setParentNode(SkeletonNode& parentNode);
 
@@ -242,7 +156,7 @@ public:
 
     SkeletonNode& getNode(int index);
 
-    //SkeletonBeam& getBeam(int index);
+    void updateParentOrientation(sf::Vector2f const & orientation);
 
     void setBaseNodeAngle(float angle);
 
@@ -271,7 +185,7 @@ class Skeleton2D
                            std::string const & child,
                            int linkIndex = -1);
 
-    void updateBaseNodeAngle(std::string const & childName);
+    void updateBaseNodeOrientation(std::string const & childName);
 
 public:
     Skeleton2D(sf::Vector2f const & basePos = {0.0f, 0.0f});
@@ -285,7 +199,8 @@ public:
 
     void setTarget(sf::Vector2f const & target,
                    std::string const & chainName,
-                   int chainNode);
+                   int chainNode,
+                   bool applyOffset = false);
 
     void draw(sf::RenderWindow& window);
 };

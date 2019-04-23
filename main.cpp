@@ -7,14 +7,17 @@ int main()
     sf::RenderWindow window;
     sf::VideoMode mode(800, 800);
     window.create(mode, "test");
+    sf::View currView;
+    currView.setCenter(0.0f, 0.0f);
+    window.setView(currView);
 
     std::vector<SkeletonNode > nodes1 = {
         SkeletonNode{{0.0f, 0.0f},    0, -Math::PI/2.0f, Math::PI, ""},
-        //SkeletonNode{{50.0f,  0.0f},     0, -Math::PI, Math::PI, ""},
+        SkeletonNode{{50.0f,  0.0f},     0, -Math::PI, Math::PI, ""},
         //SkeletonNode{{100.0f, 0.0f},   0, -Math::PI/2.0f, Math::PI/2.0f, ""},
     };
     std::vector<SkeletonNode > nodes2 = {
-        SkeletonNode{{150.0f, 100.0f},   0, -Math::PI, Math::PI, ""},
+        SkeletonNode{{50.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
         //SkeletonNode{{200.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
         //SkeletonNode{{250.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
         //SkeletonNode{{300.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
@@ -32,16 +35,28 @@ int main()
     Skeleton2DChain skeleton4(nodes3);
 
     Skeleton2D skeleton({300.0f, 0.0f});
+
+
     skeleton.addChain("root", skeleton1, "");
-    skeleton.addChain("second", skeleton2, "root");
+    BoneData data = {
+        "second",
+        "root",
+        {50.0f, 0.0f},
+        50.0f,
+        90.0f
+    };
+    skeleton.addBone(data);
+
+    //skeleton.addChain("second", skeleton2, "root");
     //skeleton.addChain("third", skeleton3, "first");
     //skeleton.addChain("fourth", skeleton4, "third");
 
-    //Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example2.json");
-    skeleton.setTarget({400.0f, 400.0f}, "root", 0);
+    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example.json");
+    //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
+    //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
 
     int selector = 2;
-    std::string sstring = "first";
+    std::string sstring = "root";
 
     sf::Clock clock;
     clock.restart();
@@ -67,14 +82,14 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) selector = 2;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) selector = 3;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) selector = -1;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) sstring = "first";
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) sstring = "second";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) sstring = "root";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) sstring = "left lower leg";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "third";
 
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
         {
-            skeleton.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
+            skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
                                sstring, selector);
 
         }
@@ -85,7 +100,7 @@ int main()
 
         window.clear(sf::Color::Black);
 
-        skeleton.draw(window);
+        skeletonJ.draw(window);
 
         window.display();
     }

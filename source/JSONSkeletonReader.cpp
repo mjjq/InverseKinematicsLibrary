@@ -28,11 +28,11 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
             data.offset.x = currJ.value("x", 0.0f);
             data.offset.y = currJ.value("y", 0.0f);
             data.length = scaleFactor * currJ.value("length", 0.0f);
-            data.rotation = currJ.value("rotation", 0.0f);
+            data.rotation = -currJ.value("rotation", 0.0f);
 
             skeleton.addBone(data);
 
-            std::cout << data.name << ": rotation = " << data.rotation << "\n";
+            //std::cout << data.name << ": rotation = " << data.rotation << "\n";
         }
 
         return skeleton;

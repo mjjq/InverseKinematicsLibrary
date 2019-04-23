@@ -4,25 +4,10 @@ Skeleton2DChain::Skeleton2DChain() {}
 
 Skeleton2DChain::Skeleton2DChain(std::vector<SkeletonNode > _nodes,
                                  sf::Vector2f const & _offset) :
-                                     nodes{_nodes}, offset{_offset}
+                                     nodes{_nodes}, absOffset{_offset}
 {
     resetBeams();
 }
-
-
-/*void Skeleton2DChain::constrainToAngularRange(SkeletonBeam& firstBeam,
-                                 SkeletonBeam& secondBeam,
-                                 Direction dir)
-{
-    if(dir == Direction::Forward)
-        constrainToAngularRange(firstBeam.node1,
-                                secondBeam.node1,
-                                secondBeam.node2);
-    else
-        constrainToAngularRange(secondBeam.node2,
-                                secondBeam.node1,
-                                firstBeam.node1);
-}*/
 
 bool Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
                              SkeletonNode& node2,
@@ -57,11 +42,6 @@ void Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
                              0, 0.0f, 0.0f, "");
     constrainToAngularRange(virtualNode, node1, node2);
 }
-
-/*void Skeleton2DChain::constrainToAngularRange(SkeletonBeam& beam)
-{
-    constrainToAngularRange(beam.node1, beam.node2);
-}*/
 
 void Skeleton2DChain::inverseK(sf::Vector2f const & t,
               int baseIndex,
@@ -163,11 +143,6 @@ void Skeleton2DChain::inverseK(sf::Vector2f const & t,
         }
     }
 
-
-    /*sf::Vector2f newDir = Math::norm(nodes[1].position -
-                                     nodes[0].position);
-    nodes[0].angle = atan2(-newDir.y, newDir.x);*/
-
     baseNodeAngle = SkeletonNode::getAngle(nodes[0], nodes[1]);
     nodes[0].angle = baseNodeAngle;
 
@@ -247,65 +222,57 @@ void Skeleton2DChain::draw(sf::RenderWindow& window)
     line[1].color = sf::Color::White;
 
 
+    shape.setPosition(nodes[0].position);
+    window.draw(shape);
+
     for(int i=0; i<nodes.size()-1; ++i)
     {
-        line[0].position = nodes[i].position + offset;
-        line[1].position = nodes[i+1].position + offset;
+        line[0].position = nodes[i].position;
+        line[1].position = nodes[i+1].position;
         window.draw(line);
 
-        shape.setPosition(nodes[i+1].position + offset);
+        shape.setPosition(nodes[i+1].position);
         window.draw(shape);
     }
 }
 
-void Skeleton2DChain::setTarget(sf::Vector2f const & t, int targetIndex)
+void Skeleton2DChain::setTarget(sf::Vector2f const & t, int targetIndex,
+                                bool applyOffset, bool setOffset)
 {
+    sf::Vector2f offset = {0.0f, 0.0f};
+    if(applyOffset)
+        offset = relOffset.x * nodes[0].orientation +
+                 relOffset.y * Math::orthogonal(nodes[0].orientation, 1.0f);
+
     if(targetIndex < 0 || targetIndex >= nodes.size())
     {
         targetIndex = nodes.size()-1;
-        inverseK(t, 0, targetIndex);
+        inverseK(t+offset, 0, targetIndex);
     }
     else if(targetIndex==0)
     {
-        forwardK(t, targetIndex);
+        forwardK(t+offset, targetIndex);
     }
     else
     {
-        inverseK(t, 0, targetIndex);
-        forwardK(t, targetIndex);
+        inverseK(t+offset, 0, targetIndex);
+        forwardK(t+offset, targetIndex);
     }
 }
 
 void Skeleton2DChain::setParentNode(SkeletonNode& parentNode)
 {
-    //beams.clear();
-    //beams.push_back(SkeletonBeam(parentNode, nodes[0], 'y'));
-    //parentNode.orientation = Math::norm(nodes[0].position - parentNode.position);
-    nodes.insert(nodes.begin(), parentNode);
     linkedToParent = true;
 
     resetBeams();
 
-    if(nodes.size() > 2)
-    {
-        nodes[1].angle = SkeletonNode::getAngle(nodes[0], nodes[1], nodes[2]);
-    }
-    else
-        nodes[1].angle = 0.0f;
-
-
     nodes[0].angle = SkeletonNode::getAngle(nodes[0], nodes[1]);
     baseNodeAngle = nodes[0].angle;
-}
 
-/*void Skeleton2DChain::updateParentNode(SkeletonNode& parentNode)
-{
-    if(linkedToParent)
-    {
-        nodes[0].position = parentNode.position;
-        nodes[0].orientation = parentNode.orientation;
-    }
-}*/
+    //relOffset = {Math::dot(absOffset, nodes[0].orientation),
+    //             Math::cross(absOffset, nodes[0].orientation)};
+    relOffset = absOffset;
+}
 
 SkeletonNode& Skeleton2DChain::getBaseNode()
 {
@@ -321,12 +288,6 @@ SkeletonNode& Skeleton2DChain::getNode(int index)
     return nodes[index];
 }
 
-/*SkeletonBeam& Skeleton2DChain::getBeam(int index)
-{
-    if(index < 0) index = beams.size()+index;
-
-    return beams[index];
-}*/
 
 void Skeleton2DChain::setBaseNodeAngle(float angle)
 {
@@ -341,4 +302,9 @@ float Skeleton2DChain::getBaseNodeAngle()
 int Skeleton2DChain::getNumNodes()
 {
     return nodes.size();
+}
+
+void Skeleton2DChain::updateParentOrientation(sf::Vector2f const & orientation)
+{
+    nodes[0].orientation = orientation;
 }

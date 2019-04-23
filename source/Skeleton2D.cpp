@@ -35,34 +35,21 @@ void Skeleton2D::linkParentToChild(std::string const & parent,
         parentTo.push_back({parent, child});
 
         chains[child].setParentNode(chains[parent].getNode(linkIndex));
-        updateBaseNodeAngle(child);
+        updateBaseNodeOrientation(child);
+
+        sf::Vector2f parentStartPos = chains[parent].getNode(0).position;
+        chains[child].setTarget(parentStartPos, 0, true);
     }
 }
 
-void Skeleton2D::updateBaseNodeAngle(std::string const & childName)
+void Skeleton2D::updateBaseNodeOrientation(std::string const & childName)
 {
     std::string parentName = getParent(childName);
     if(parentName != NULL_NAME)
     {
-        //SkeletonBeam& childBeam  = chains[childName].getBeam(0);
-        //SkeletonBeam& parentBeam = chains[parentName].getBeam(-1);
-        //SkeletonNode& node1 = chains[parentName].getNode(-2);
-        SkeletonNode& node2 = chains[parentName].getNode(-1);
-        //SkeletonNode& node3 = chains[childName].getNode(1);
+        SkeletonNode& parentEndNode = chains[parentName].getNode(-1);
 
-        SkeletonNode& childBaseNode = chains[childName].getBaseNode();
-        childBaseNode.orientation = node2.orientation;
-
-        //std::cout << childBaseNode.orientation.x << " : " << childBaseNode.orientation.y << "\n";
-        //float angle = SkeletonNode::getAngle(node1, node2, node3);
-        //std::cout << angle << " angle\n";
-
-        //assert(!std::isnan(angle));
-        //std::cout << angle << " angle\n";
-        //chains[childName].setBaseNodeAngle(angle);
-
-        //childBaseNode.angle = angle;
-        //node2.angle = angle;
+        chains[childName].updateParentOrientation(parentEndNode.orientation);
     }
 }
 
@@ -82,7 +69,7 @@ void Skeleton2D::addBone(BoneData const & boneData)
     {
         SkeletonNode& parentNode = chains[boneData.parent].getNode(-1);
 
-        sf::Vector2f firstNodePos = parentNode.position + boneData.offset;
+        sf::Vector2f firstNodePos = parentNode.position;
         SkeletonNode firstNode(firstNodePos, 0, -Math::PI, Math::PI, "");
 
         if(boneData.length > 0.0f)
@@ -93,16 +80,16 @@ void Skeleton2D::addBone(BoneData const & boneData)
             SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
             secondNode.orientation = relDir;
 
-            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}), boneData.parent);
+            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}, boneData.offset), boneData.parent);
         }
         else
         {
-            addChain(boneData.name, Skeleton2DChain({firstNode}), boneData.parent);
+            addChain(boneData.name, Skeleton2DChain({firstNode}, boneData.offset), boneData.parent);
         }
     }
     else
     {
-        sf::Vector2f firstNodePos = boneData.offset;
+        sf::Vector2f firstNodePos = {0.0f, 0.0f};
         SkeletonNode firstNode(firstNodePos, 0, -Math::PI, Math::PI, "");
 
         if(boneData.length > 0.0f)
@@ -112,18 +99,18 @@ void Skeleton2D::addBone(BoneData const & boneData)
             SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
             secondNode.orientation = relDir;
 
-            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}), NULL_NAME);
+            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}, boneData.offset), NULL_NAME);
         }
         else
         {
-            addChain(boneData.name, Skeleton2DChain({firstNode}), NULL_NAME);
+            addChain(boneData.name, Skeleton2DChain({firstNode}, boneData.offset), NULL_NAME);
         }
     }
 }
 
 void Skeleton2D::setTarget(sf::Vector2f const & target,
                std::string const & chainName,
-               int chainNode)
+               int chainNode, bool applyOffset)
 {
     if(chains.find(chainName) != chains.end())
     {
@@ -131,20 +118,19 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
         {
             SkeletonNode& baseNode  = chains[chainName].getBaseNode();
             baseNode.angle = chains[chainName].getBaseNodeAngle();
-            //std::cout << baseNode.angle << "\n";
         }
 
-        chains[chainName].setTarget(target, chainNode);
+        chains[chainName].setTarget(target, chainNode, applyOffset);
 
-        updateBaseNodeAngle(chainName);
+        updateBaseNodeOrientation(chainName);
 
         //recursively update targets to children
         for(int i=0; i<parentTo.size(); ++i)
         {
             if(parentTo[i].first == chainName)
             {
-                sf::Vector2f lastNodePos = chains[chainName].getNode(-1).position;
-                setTarget(lastNodePos, parentTo[i].second, 0);
+                sf::Vector2f lastNodePos = chains[chainName].getNode(0).position;
+                setTarget(lastNodePos, parentTo[i].second, 0, true);
             }
         }
     }

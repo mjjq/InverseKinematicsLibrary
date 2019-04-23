@@ -1,5 +1,5 @@
 #include "JSONSkeletonReader.h"
-#include "Skeleton.h"
+#include "Skeleton2D.h"
 
 #include <fstream>
 

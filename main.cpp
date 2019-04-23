@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "Skeleton.h"
+#include "Skeleton2D.h"
 #include "JSONSkeletonReader.h"
 
 int main()
@@ -29,10 +29,10 @@ int main()
         SkeletonNode{{300.0f, 20.0f},   0, -Math::PI, Math::PI, ""},
     };
 
-    Skeleton2DChain skeleton1(nodes1);
-    Skeleton2DChain skeleton2(nodes2);
-    Skeleton2DChain skeleton3(nodes3);
-    Skeleton2DChain skeleton4(nodes3);
+    Skeleton2DBone skeleton1(nodes1);
+    Skeleton2DBone skeleton2(nodes2);
+    Skeleton2DBone skeleton3(nodes3);
+    Skeleton2DBone skeleton4(nodes3);
 
     Skeleton2D skeleton({300.0f, 0.0f});
 

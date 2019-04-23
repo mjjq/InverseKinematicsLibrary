@@ -1,4 +1,4 @@
-#include "Skeleton.h"
+#include "Skeleton2D.h"
 
 
 Skeleton2D::Skeleton2D(sf::Vector2f const & basePos) : basePosition{basePos}
@@ -55,7 +55,7 @@ void Skeleton2D::updateBaseNodeOrientation(std::string const & childName)
 
 
 void Skeleton2D::addChain(std::string const & name,
-              Skeleton2DChain chain,
+              Skeleton2DBone chain,
               std::string const & parentName,
               int linkIndex)
 {
@@ -80,11 +80,11 @@ void Skeleton2D::addBone(BoneData const & boneData)
             SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
             secondNode.orientation = relDir;
 
-            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}, boneData.offset), boneData.parent);
+            addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), boneData.parent);
         }
         else
         {
-            addChain(boneData.name, Skeleton2DChain({firstNode}, boneData.offset), boneData.parent);
+            addChain(boneData.name, Skeleton2DBone({firstNode}, boneData.offset), boneData.parent);
         }
     }
     else
@@ -99,11 +99,11 @@ void Skeleton2D::addBone(BoneData const & boneData)
             SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
             secondNode.orientation = relDir;
 
-            addChain(boneData.name, Skeleton2DChain({firstNode, secondNode}, boneData.offset), NULL_NAME);
+            addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), NULL_NAME);
         }
         else
         {
-            addChain(boneData.name, Skeleton2DChain({firstNode}, boneData.offset), NULL_NAME);
+            addChain(boneData.name, Skeleton2DBone({firstNode}, boneData.offset), NULL_NAME);
         }
     }
 }

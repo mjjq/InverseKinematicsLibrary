@@ -2,7 +2,7 @@
 #define SKELETON_READER_H
 
 #include "../extern/json.hpp"
-#include "Skeleton.h"
+#include "Skeleton2D.h"
 
 class JSONSkeletonReader
 {

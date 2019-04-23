@@ -1,15 +1,15 @@
-#include "Skeleton.h"
+#include "Skeleton2DBone.h"
 
-Skeleton2DChain::Skeleton2DChain() {}
+Skeleton2DBone::Skeleton2DBone() {}
 
-Skeleton2DChain::Skeleton2DChain(std::vector<SkeletonNode > _nodes,
+Skeleton2DBone::Skeleton2DBone(std::vector<SkeletonNode > _nodes,
                                  sf::Vector2f const & _offset) :
                                      nodes{_nodes}, absOffset{_offset}
 {
     resetBeams();
 }
 
-bool Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
+bool Skeleton2DBone::constrainToAngularRange(SkeletonNode& node1,
                              SkeletonNode& node2,
                              SkeletonNode& node3)
 {
@@ -35,7 +35,7 @@ bool Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
     return false;
 }
 
-void Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
+void Skeleton2DBone::constrainToAngularRange(SkeletonNode& node1,
                              SkeletonNode& node2)
 {
     SkeletonNode virtualNode(node1.position - node1.orientation,
@@ -43,7 +43,7 @@ void Skeleton2DChain::constrainToAngularRange(SkeletonNode& node1,
     constrainToAngularRange(virtualNode, node1, node2);
 }
 
-void Skeleton2DChain::inverseK(sf::Vector2f const & t,
+void Skeleton2DBone::inverseK(sf::Vector2f const & t,
               int baseIndex,
               int targetIndex)
 {
@@ -162,7 +162,7 @@ void Skeleton2DChain::inverseK(sf::Vector2f const & t,
 
 }
 
-void Skeleton2DChain::forwardK(sf::Vector2f const & t,
+void Skeleton2DBone::forwardK(sf::Vector2f const & t,
               int targetIndex)
 {
     sf::Vector2f resultantVector = {0.0f, 0.0f};
@@ -195,7 +195,7 @@ void Skeleton2DChain::forwardK(sf::Vector2f const & t,
     }
 }
 
-void Skeleton2DChain::resetBeams()
+void Skeleton2DBone::resetBeams()
 {
     for(int i=1; i<nodes.size(); ++i)
     {
@@ -212,7 +212,7 @@ void Skeleton2DChain::resetBeams()
     }
 }
 
-void Skeleton2DChain::draw(sf::RenderWindow& window)
+void Skeleton2DBone::draw(sf::RenderWindow& window)
 {
     float radius = 5.0f;
     sf::CircleShape shape(radius);
@@ -236,7 +236,7 @@ void Skeleton2DChain::draw(sf::RenderWindow& window)
     }
 }
 
-void Skeleton2DChain::setTarget(sf::Vector2f const & t, int targetIndex,
+void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
                                 bool applyOffset, bool setOffset)
 {
     sf::Vector2f offset = {0.0f, 0.0f};
@@ -260,7 +260,7 @@ void Skeleton2DChain::setTarget(sf::Vector2f const & t, int targetIndex,
     }
 }
 
-void Skeleton2DChain::setParentNode(SkeletonNode& parentNode)
+void Skeleton2DBone::setParentNode(SkeletonNode& parentNode)
 {
     linkedToParent = true;
 
@@ -274,12 +274,12 @@ void Skeleton2DChain::setParentNode(SkeletonNode& parentNode)
     relOffset = absOffset;
 }
 
-SkeletonNode& Skeleton2DChain::getBaseNode()
+SkeletonNode& Skeleton2DBone::getBaseNode()
 {
     return nodes[0];
 }
 
-SkeletonNode& Skeleton2DChain::getNode(int index)
+SkeletonNode& Skeleton2DBone::getNode(int index)
 {
     if(index < 0) index = nodes.size()+index;
 
@@ -289,22 +289,22 @@ SkeletonNode& Skeleton2DChain::getNode(int index)
 }
 
 
-void Skeleton2DChain::setBaseNodeAngle(float angle)
+void Skeleton2DBone::setBaseNodeAngle(float angle)
 {
     baseNodeAngle = angle;
 }
 
-float Skeleton2DChain::getBaseNodeAngle()
+float Skeleton2DBone::getBaseNodeAngle()
 {
     return baseNodeAngle;
 }
 
-int Skeleton2DChain::getNumNodes()
+int Skeleton2DBone::getNumNodes()
 {
     return nodes.size();
 }
 
-void Skeleton2DChain::updateParentOrientation(sf::Vector2f const & orientation)
+void Skeleton2DBone::updateParentOrientation(sf::Vector2f const & orientation)
 {
     nodes[0].orientation = orientation;
 }

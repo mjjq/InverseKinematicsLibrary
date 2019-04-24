@@ -60,17 +60,19 @@ void Skeleton2D::addChain(std::string const & name,
               int linkIndex)
 {
     chains.insert({name, chain});
-    std::cout << name << ": "  << chain.getNumNodes() << "\n";
     linkParentToChild(parentName, name, linkIndex);
 }
 
 void Skeleton2D::addBone(BoneData const & boneData)
 {
-    if(chains.find(boneData.parent) != chains.end())
-    {
-        SkeletonNode& parentNode = chains[boneData.parent].getNode(-1);
+        sf::Vector2f firstNodePos = {0.0f, 0.0f};
 
-        sf::Vector2f firstNodePos = parentNode.position;
+        if(chains.find(boneData.parent) != chains.end())
+        {
+            SkeletonNode& parentNode = chains[boneData.parent].getNode(-1);
+            firstNodePos = parentNode.position;
+        }
+
         SkeletonNode firstNode(firstNodePos, 0, -Math::PI, Math::PI, "");
 
         if(boneData.length > 0.0f)
@@ -87,26 +89,6 @@ void Skeleton2D::addBone(BoneData const & boneData)
         {
             addChain(boneData.name, Skeleton2DBone({firstNode}, boneData.offset), boneData.parent);
         }
-    }
-    else
-    {
-        sf::Vector2f firstNodePos = {0.0f, 0.0f};
-        SkeletonNode firstNode(firstNodePos, 0, -Math::PI, Math::PI, "");
-
-        if(boneData.length > 0.0f)
-        {
-            sf::Vector2f relDir = Math::rotate({1.0f, 0.0f}, boneData.rotation);
-            sf::Vector2f secondNodePos = firstNodePos + boneData.length * relDir;
-            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "", true);
-            secondNode.orientation = relDir;
-
-            addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), NULL_NAME);
-        }
-        else
-        {
-            addChain(boneData.name, Skeleton2DBone({firstNode}, boneData.offset), NULL_NAME);
-        }
-    }
 }
 
 std::vector<std::string > Skeleton2D::getHierarchy(std::string const & firstNode,

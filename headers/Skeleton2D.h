@@ -26,7 +26,6 @@ class Skeleton2D
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
-    std::map<std::string, Skeleton2DBone > ikConstraints;
 
     const int PAIR_NOT_FOUND = -1;
 

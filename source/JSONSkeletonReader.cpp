@@ -17,23 +17,9 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
         json j;
         input >> j;
 
-        for(json &currJ : j["bones"])
-        {
-            assert(!currJ["name"].is_null());
-
-            BoneData data;
-
-            data.name = currJ["name"];
-            data.parent = currJ.value("parent", "");
-            data.offset.x = currJ.value("x", 0.0f);
-            data.offset.y = currJ.value("y", 0.0f);
-            data.length = scaleFactor * currJ.value("length", 0.0f);
-            data.rotation = -currJ.value("rotation", 0.0f);
-
-            skeleton.addBone(data);
-
-            //std::cout << data.name << ": rotation = " << data.rotation << "\n";
-        }
+        parseBoneData(j, skeleton);
+        std::cout << "ik replacement\n";
+        parseIKConstraints(j, skeleton);
 
         return skeleton;
     }
@@ -41,4 +27,49 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
     return Skeleton2D();
 }
 
+void JSONSkeletonReader::parseBoneData(nlohmann::json const & j,
+                                       Skeleton2D & skeleton)
+{
+    for(auto &currJ : j["bones"])
+    {
+        assert(!currJ["name"].is_null());
 
+        BoneData data;
+
+        data.name = currJ["name"];
+        data.parent = currJ.value("parent", "");
+        data.offset.x = currJ.value("x", 0.0f);
+        data.offset.y = currJ.value("y", 0.0f);
+        data.length = currJ.value("length", 0.0f);
+        data.rotation = -currJ.value("rotation", 0.0f);
+
+        skeleton.addBone(data);
+
+        //std::cout << data.name << ": rotation = " << data.rotation << "\n";
+    }
+}
+
+void JSONSkeletonReader::parseIKConstraints(nlohmann::json const & j,
+                                            Skeleton2D & skeleton)
+{
+    for(auto &currJ : j["ik"])
+    {
+        assert(!currJ["name"].is_null());
+
+        IKConstraintData ikData;
+
+        ikData.name = currJ["name"];
+
+        if(currJ["bones"].size() == 1)
+            ikData.firstBone = currJ["bones"][0];
+        else if(currJ["bones"].size() == 2)
+        {
+            ikData.firstBone = currJ["bones"][0];
+            ikData.lastBone = currJ["bones"][1];
+        }
+
+        ikData.target = currJ.value("target", "");
+
+        skeleton.addIKConstraint(ikData);
+    }
+}

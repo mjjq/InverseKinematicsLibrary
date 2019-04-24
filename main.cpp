@@ -51,7 +51,7 @@ int main()
     //skeleton.addChain("third", skeleton3, "first");
     //skeleton.addChain("fourth", skeleton4, "third");
 
-    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example.json");
+    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example2.json");
     //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
     //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
 
@@ -84,7 +84,7 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) selector = -1;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) sstring = "root";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) sstring = "left lower leg";
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "third";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "left leg";
 
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
@@ -95,7 +95,7 @@ int main()
         }
 
         float time = clock.getElapsedTime().asSeconds()/1.0f;
-        //skeleton.setTarget({300.0f, 200.0f+50.0f*sin(time)}, "second", -1);
+        //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);
 
         window.clear(sf::Color::Black);

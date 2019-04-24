@@ -60,6 +60,7 @@ void Skeleton2D::addChain(std::string const & name,
               int linkIndex)
 {
     chains.insert({name, chain});
+    std::cout << name << ": "  << chain.getNumNodes() << "\n";
     linkParentToChild(parentName, name, linkIndex);
 }
 
@@ -77,7 +78,7 @@ void Skeleton2D::addBone(BoneData const & boneData)
             sf::Vector2f relDir = Math::rotate({1.0f, 0.0f}, boneData.rotation);
 
             sf::Vector2f secondNodePos = firstNodePos + boneData.length * relDir;
-            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
+            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "", true);
             secondNode.orientation = relDir;
 
             addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), boneData.parent);
@@ -96,7 +97,7 @@ void Skeleton2D::addBone(BoneData const & boneData)
         {
             sf::Vector2f relDir = Math::rotate({1.0f, 0.0f}, boneData.rotation);
             sf::Vector2f secondNodePos = firstNodePos + boneData.length * relDir;
-            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "");
+            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "", true);
             secondNode.orientation = relDir;
 
             addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), NULL_NAME);
@@ -107,6 +108,70 @@ void Skeleton2D::addBone(BoneData const & boneData)
         }
     }
 }
+
+std::vector<std::string > Skeleton2D::getHierarchy(std::string const & firstNode,
+                                                   std::string const & lastNode)
+{
+    std::vector<std::string > hierarchy = {lastNode};
+    std::string parentBone = "";
+    std::string currentBone = lastNode;
+    while(parentBone != firstNode)
+    {
+        parentBone = getParent(currentBone);
+        hierarchy.insert(hierarchy.begin(), parentBone);
+        currentBone = parentBone;
+
+        if(currentBone == chains.begin()->first)
+            return {};
+    }
+
+    return hierarchy;
+}
+
+
+void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
+{
+    std::vector<std::string > hierarchy = getHierarchy(ikData.firstBone,
+                                                       ikData.lastBone);
+
+    std::vector<SkeletonNode > ikNodes;
+
+    sf::Vector2f baseOffset = chains[ikData.firstBone].getOffset();
+
+    for(std::string &boneName : hierarchy)
+    {
+        Skeleton2DBone& bone = chains[boneName];
+
+        for(int i=0; i<bone.getNumNodes(); ++i)
+        {
+            ikNodes.push_back(bone.getNode(i));
+            if(i == bone.getNumNodes()-1)
+            {
+               /*ikNodes[i].minAngle = 0.0f;
+                ikNodes[i].maxAngle = 0.0f;
+                ikNodes[i].minCosine = 0.0f;
+                ikNodes[i].maxCosine = 0.0f;*/
+                //std::cout << i << "reset cosine\n";
+            }
+        }
+    }
+
+    //update parentTo References with new name
+    /*for(auto &pCPair : parentTo)
+    {
+        for(std::string &boneName : hierarchy)
+        {
+            if(pCPair.first == boneName)
+                pCPair.first = ikData.name;
+            if(pCPair.second == boneName)
+                pCPair.second = ikData.name;
+        }
+    }*/
+
+    //ikConstraints.insert({ikData.name, Skeleton2DBone(ikNodes, baseOffset)});
+    ikGroups.insert({ikData.name, hierarchy});
+}
+
 
 void Skeleton2D::setTarget(sf::Vector2f const & target,
                std::string const & chainName,
@@ -134,10 +199,24 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
             }
         }
     }
+    else if(ikGroups.find(chainName) != ikGroups.end())
+    {
+        //ikConstraints[chainName].setTarget(target, chainNode, true);
+        //std::cout << chainName << " is manipulated\n";
+        std::vector<Skeleton2DBone* > ikBones;
+        for(std::string & boneName : ikGroups[chainName])
+        {
+            ikBones.push_back(&chains[boneName]);
+        }
+
+        Skeleton2DBone::inverseK(target, ikBones);
+    }
 }
 
 void Skeleton2D::draw(sf::RenderWindow& window)
 {
     for(auto it = chains.begin(); it != chains.end(); ++it)
         it->second.draw(window);
+    //for(auto it = ikConstraints.begin(); it != ikConstraints.end(); ++it)
+    //    it->second.draw(window);
 }

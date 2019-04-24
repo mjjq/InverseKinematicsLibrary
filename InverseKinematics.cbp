@@ -45,12 +45,13 @@
 		<Unit filename="headers/JSONSkeletonReader.h" />
 		<Unit filename="headers/Math.h" />
 		<Unit filename="headers/Skeleton2D.h" />
+		<Unit filename="headers/Skeleton2DBone.h" />
 		<Unit filename="headers/SkeletonNode.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="source/JSONSkeletonReader.cpp" />
 		<Unit filename="source/Math.cpp" />
 		<Unit filename="source/Skeleton2D.cpp" />
-		<Unit filename="source/Skeleton2DChain.cpp" />
+		<Unit filename="source/Skeleton2DBone.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

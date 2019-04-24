@@ -234,8 +234,8 @@ void Skeleton2DBone::inverseK(sf::Vector2f const & t,
             offset = offset.x * boneNode2.orientation +
                      offset.y * Math::orthogonal(boneNode2.orientation, 1.0f);
 
-            pi = pi;// - offset;
-            pip1 = pip1;// - offset;
+            //pi = pi + offset;
+            //pip1 = pip1 + offset;
         }
 
         //nodes[baseIndex].position = b;
@@ -254,7 +254,7 @@ void Skeleton2DBone::inverseK(sf::Vector2f const & t,
 
             pip1 = (1-lambdai)*pi + lambdai*pip1;
 
-            node1.orientation = (pip1-pi)/ri;
+            node1.orientation = Math::norm(pip1-pi);
         }
 
         for(int i=1; i<lastIndex; ++i)
@@ -281,7 +281,7 @@ void Skeleton2DBone::inverseK(sf::Vector2f const & t,
 
             pip1 = (1-lambdai)*pi + lambdai*pip1;
 
-            boneNode2.orientation = (pip1-pi)/ri;
+            boneNode2.orientation = Math::norm(pip1-pi);
 
             SkeletonNode& prevNode = bones[i-1]->getNode(-1);
 
@@ -290,29 +290,30 @@ void Skeleton2DBone::inverseK(sf::Vector2f const & t,
             offset = offset.x * prevNode.orientation +
                      offset.y * Math::orthogonal(prevNode.orientation, 1.0f);
 
-            pi = pi;// - offset;
-            pip1 = pip1;// - offset;
+            //pi = pi + offset;
+            //pip1 = pip1 +  offset;
         }
 
         difA = sqrtf(Math::square(pn - t));
         ++noIterations;
 
-        Skeleton2DBone& baseBone = *bones[0];
-        baseBone.baseNodeAngle = SkeletonNode::getAngle(baseBone.getNode(0),
-                                               baseBone.getNode(-1));
-        baseBone.getNode(0).angle = baseBone.baseNodeAngle;
+    }
 
-        for(int i=0; i<lastIndex-1; ++i)
-        {
-            SkeletonNode& node1 = bones[i]->getNode(0);
-            SkeletonNode& node2 = bones[i]->getNode(-1);
-            SkeletonNode& node3 = bones[i+1]->getNode(0);
-            SkeletonNode& node4 = bones[i+1]->getNode(-1);
+    Skeleton2DBone& baseBone = *bones[0];
+    baseBone.baseNodeAngle = SkeletonNode::getAngle(baseBone.getNode(0),
+                                           baseBone.getNode(-1));
+    baseBone.getNode(0).angle = baseBone.baseNodeAngle;
 
-            node2.angle = SkeletonNode::getAngle(node1, node2, node3, node4);
-            node3.angle = node2.angle;
-            bones[i+1]->baseNodeAngle = node2.angle;
-        }
+    for(int i=0; i<lastIndex-1; ++i)
+    {
+        SkeletonNode& node1 = bones[i]->getNode(0);
+        SkeletonNode& node2 = bones[i]->getNode(-1);
+        SkeletonNode& node3 = bones[i+1]->getNode(0);
+        SkeletonNode& node4 = bones[i+1]->getNode(-1);
+
+        node2.angle = SkeletonNode::getAngle(node1, node2, node3, node4);
+        node3.angle = node2.angle;
+        bones[i+1]->baseNodeAngle = node2.angle;
     }
 }
 
@@ -335,7 +336,6 @@ void Skeleton2DBone::forwardK(sf::Vector2f const & t,
         resultantAngle = 180.0f*nodes[i].angle/Math::PI;
         resultantVector = Math::rotate(nodes[i].orientation * nodes[i].distanceToNext,
                                        -resultantAngle);
-
         assert(!std::isnan(resultantAngle));
         assert(!std::isnan(nodes[i].orientation.x));
 

@@ -133,42 +133,6 @@ void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
 {
     std::vector<std::string > hierarchy = getHierarchy(ikData.firstBone,
                                                        ikData.lastBone);
-
-    std::vector<SkeletonNode > ikNodes;
-
-    sf::Vector2f baseOffset = chains[ikData.firstBone].getOffset();
-
-    for(std::string &boneName : hierarchy)
-    {
-        Skeleton2DBone& bone = chains[boneName];
-
-        for(int i=0; i<bone.getNumNodes(); ++i)
-        {
-            ikNodes.push_back(bone.getNode(i));
-            if(i == bone.getNumNodes()-1)
-            {
-               /*ikNodes[i].minAngle = 0.0f;
-                ikNodes[i].maxAngle = 0.0f;
-                ikNodes[i].minCosine = 0.0f;
-                ikNodes[i].maxCosine = 0.0f;*/
-                //std::cout << i << "reset cosine\n";
-            }
-        }
-    }
-
-    //update parentTo References with new name
-    /*for(auto &pCPair : parentTo)
-    {
-        for(std::string &boneName : hierarchy)
-        {
-            if(pCPair.first == boneName)
-                pCPair.first = ikData.name;
-            if(pCPair.second == boneName)
-                pCPair.second = ikData.name;
-        }
-    }*/
-
-    //ikConstraints.insert({ikData.name, Skeleton2DBone(ikNodes, baseOffset)});
     ikGroups.insert({ikData.name, hierarchy});
 }
 
@@ -201,15 +165,25 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
     }
     else if(ikGroups.find(chainName) != ikGroups.end())
     {
-        //ikConstraints[chainName].setTarget(target, chainNode, true);
-        //std::cout << chainName << " is manipulated\n";
         std::vector<Skeleton2DBone* > ikBones;
+        std::string finalName = "";
         for(std::string & boneName : ikGroups[chainName])
         {
             ikBones.push_back(&chains[boneName]);
+            finalName = boneName;
         }
 
         Skeleton2DBone::inverseK(target, ikBones);
+
+        //recursively update targets to children
+        for(int i=0; i<parentTo.size(); ++i)
+        {
+            if(parentTo[i].first == finalName)
+            {
+                sf::Vector2f lastNodePos = chains[finalName].getNode(0).position;
+                setTarget(lastNodePos, parentTo[i].second, 0, true);
+            }
+        }
     }
 }
 

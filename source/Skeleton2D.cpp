@@ -1,7 +1,7 @@
 #include "Skeleton2D.h"
 
 
-Skeleton2D::Skeleton2D(sf::Vector2f const & basePos) : basePosition{basePos}
+Skeleton2D::Skeleton2D()
 {}
 
 int Skeleton2D::getParentChildPair(std::string const & parent,
@@ -173,6 +173,4 @@ void Skeleton2D::draw(sf::RenderWindow& window)
 {
     for(auto it = chains.begin(); it != chains.end(); ++it)
         it->second.draw(window);
-    //for(auto it = ikConstraints.begin(); it != ikConstraints.end(); ++it)
-    //    it->second.draw(window);
 }

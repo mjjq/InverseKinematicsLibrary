@@ -18,8 +18,8 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
         input >> j;
 
         parseBoneData(j, skeleton);
-        std::cout << "ik replacement\n";
-        parseIKConstraints(j, skeleton);
+
+        if(!j["ik"].is_null()) parseIKConstraints(j, skeleton);
 
         return skeleton;
     }

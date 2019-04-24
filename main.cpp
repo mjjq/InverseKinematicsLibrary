@@ -34,7 +34,7 @@ int main()
     Skeleton2DBone skeleton3(nodes3);
     Skeleton2DBone skeleton4(nodes3);
 
-    Skeleton2D skeleton({300.0f, 0.0f});
+    Skeleton2D skeleton;
 
 
     skeleton.addChain("root", skeleton1, "");

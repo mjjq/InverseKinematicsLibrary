@@ -22,7 +22,6 @@ struct IKConstraintData
 
 class Skeleton2D
 {
-    sf::Vector2f basePosition = {0.0f, 0.0f};
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
@@ -46,7 +45,7 @@ class Skeleton2D
                                            std::string const & lastNode);
 
 public:
-    Skeleton2D(sf::Vector2f const & basePos = {0.0f, 0.0f});
+    Skeleton2D();
 
     void addBone(BoneData const & boneData);
 

@@ -8,11 +8,11 @@
 struct SkeletonNode
 {
     sf::Vector2f position;
+    sf::Vector2f orientation;
     float minAngle;
     float maxAngle;
     float minCosine;
     float maxCosine;
-    sf::Vector2f orientation;
     float angle = 0.0f;
     float distanceToNext = 0.0f;
     int z;

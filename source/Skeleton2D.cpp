@@ -83,11 +83,15 @@ void Skeleton2D::addBone(BoneData const & boneData)
             SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "", true);
             secondNode.orientation = relDir;
 
-            addChain(boneData.name, Skeleton2DBone({firstNode, secondNode}, boneData.offset), boneData.parent);
+            addChain(boneData.name,
+                     Skeleton2DBone({firstNode, secondNode}, boneData.offset),
+                     boneData.parent);
         }
         else
         {
-            addChain(boneData.name, Skeleton2DBone({firstNode}, boneData.offset), boneData.parent);
+            addChain(boneData.name,
+                     Skeleton2DBone({firstNode}, boneData.offset),
+                     boneData.parent);
         }
 }
 
@@ -121,7 +125,8 @@ void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
 
 void Skeleton2D::setTarget(sf::Vector2f const & target,
                std::string const & chainName,
-               int chainNode, bool applyOffset)
+               int chainNode, bool applyOffset,
+               bool inheritOrientation)
 {
     if(chains.find(chainName) != chains.end())
     {
@@ -133,7 +138,8 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
 
         chains[chainName].setTarget(target, chainNode, applyOffset);
 
-        updateBaseNodeOrientation(chainName);
+        if(inheritOrientation)
+            updateBaseNodeOrientation(chainName);
 
         //recursively update targets to children
         for(int i=0; i<parentTo.size(); ++i)
@@ -165,6 +171,33 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
                 sf::Vector2f lastNodePos = chains[finalName].getNode(0).position;
                 setTarget(lastNodePos, parentTo[i].second, 0, true);
             }
+        }
+    }
+}
+
+void Skeleton2D::setRotation(float angleDegree,
+                             std::string const & boneName,
+                             RelativeTo const & relativeTo)
+{
+    if(chains.find(boneName) == chains.end())
+        return;
+
+    switch(relativeTo)
+    {
+        case RelativeTo::InitialPose:
+        {
+            SkeletonNode& startNode = chains[boneName].getNode(0);
+            SkeletonNode& endNode = chains[boneName].getNode(-1);
+
+            startNode.angle += angleDegree;
+            chains[boneName].setBaseNodeAngle(startNode.angle);
+
+            if(&endNode == &startNode)
+            {
+                startNode.orientation = Math::rotate(startNode.orientation, angleDegree);
+            }
+
+            setTarget(startNode.position, boneName, 0, false, false);
         }
     }
 }

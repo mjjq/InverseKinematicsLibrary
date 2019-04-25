@@ -59,7 +59,19 @@ public:
     void setTarget(sf::Vector2f const & target,
                    std::string const & chainName,
                    int chainNode,
-                   bool applyOffset = false);
+                   bool applyOffset = false,
+                   bool inheritOrientation = true);
+
+    enum RelativeTo
+    {
+        InitialPose,
+        Parent,
+        World
+    };
+
+    void setRotation(float angleDegree,
+                     std::string const & boneName,
+                     RelativeTo const & relativeTo);
 
     void draw(sf::RenderWindow& window);
 };

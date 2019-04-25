@@ -400,8 +400,10 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
 {
     sf::Vector2f offset = {0.0f, 0.0f};
     if(applyOffset)
-        offset = relOffset.x * nodes[0].orientation +
-                 relOffset.y * Math::orthogonal(nodes[0].orientation, 1.0f);
+        offset = relOffset.x * parentOrientation +
+                 relOffset.y * Math::orthogonal(parentOrientation, 1.0f);
+
+    //nodes[0].orientation = parentOrientation;
 
     if(targetIndex < 0 || targetIndex >= nodes.size())
     {
@@ -465,7 +467,11 @@ int Skeleton2DBone::getNumNodes()
 
 void Skeleton2DBone::updateParentOrientation(sf::Vector2f const & orientation)
 {
-    nodes[0].orientation = orientation;
+    parentOrientation = orientation;
+    if(nodes.size() > 1)
+        nodes[0].orientation = orientation;
+    else
+        nodes[0].orientation = Math::rotate(orientation, baseNodeAngle);
 }
 
 

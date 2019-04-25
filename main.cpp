@@ -84,7 +84,9 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) selector = -1;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) sstring = "root";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) sstring = "left lower leg";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::U)) sstring = "left upper leg";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "left leg";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) sstring = "hip";
 
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
@@ -92,6 +94,10 @@ int main()
             skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
                                sstring, selector);
 
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+        {
+            skeletonJ.setRotation(0.01f, sstring, Skeleton2D::RelativeTo::InitialPose);
         }
 
         float time = clock.getElapsedTime().asSeconds()/1.0f;

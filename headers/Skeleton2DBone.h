@@ -26,6 +26,7 @@ class Skeleton2DBone
     sf::Vector2f relOffset = {0.0f, 0.0f};
     bool linkedToParent = false;
     float baseNodeAngle = 0.0f;
+    sf::Vector2f parentOrientation = {1.0f, 0.0f};
 
     enum Direction
     {

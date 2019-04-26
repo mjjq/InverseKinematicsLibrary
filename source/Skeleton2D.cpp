@@ -84,13 +84,13 @@ void Skeleton2D::addBone(BoneData const & boneData)
             secondNode.orientation = relDir;
 
             addChain(boneData.name,
-                     Skeleton2DBone({firstNode, secondNode}, boneData.offset),
+                     Skeleton2DBone({firstNode, secondNode}, boneData.rotation, boneData.offset),
                      boneData.parent);
         }
         else
         {
             addChain(boneData.name,
-                     Skeleton2DBone({firstNode}, boneData.offset),
+                     Skeleton2DBone({firstNode}, boneData.rotation, boneData.offset),
                      boneData.parent);
         }
 }
@@ -189,12 +189,15 @@ void Skeleton2D::setRotation(float angleDegree,
             SkeletonNode& startNode = chains[boneName].getNode(0);
             SkeletonNode& endNode = chains[boneName].getNode(-1);
 
-            startNode.angle += angleDegree;
+            float initialAngle = chains[boneName].getInitialBaseNodeAngle();
+            startNode.angle = angleDegree + initialAngle;
+            std::cout << angleDegree << "\n";
             chains[boneName].setBaseNodeAngle(startNode.angle);
 
             if(&endNode == &startNode)
             {
-                startNode.orientation = Math::rotate(startNode.orientation, angleDegree);
+                startNode.orientation = Math::rotate(startNode.orientation,
+                                                     angleDegree+initialAngle);
             }
 
             setTarget(startNode.position, boneName, 0, false, false);

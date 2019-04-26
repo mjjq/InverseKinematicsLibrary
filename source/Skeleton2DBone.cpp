@@ -1,10 +1,13 @@
 #include "Skeleton2DBone.h"
 
-Skeleton2DBone::Skeleton2DBone() {}
+Skeleton2DBone::Skeleton2DBone() : initialBaseNodeAngle{0.0f} {}
 
 Skeleton2DBone::Skeleton2DBone(std::vector<SkeletonNode > _nodes,
-                                 sf::Vector2f const & _offset) :
-                                     nodes{_nodes}, absOffset{_offset}
+                               float _initialBaseNodeAngle,
+                               sf::Vector2f const & _offset) :
+                                     nodes{_nodes},
+                                     initialBaseNodeAngle{_initialBaseNodeAngle},
+                                     absOffset{_offset}
 {
     resetBeams();
 }
@@ -458,6 +461,11 @@ void Skeleton2DBone::setBaseNodeAngle(float angle)
 float Skeleton2DBone::getBaseNodeAngle()
 {
     return baseNodeAngle;
+}
+
+float Skeleton2DBone::getInitialBaseNodeAngle()
+{
+    return initialBaseNodeAngle;
 }
 
 int Skeleton2DBone::getNumNodes()

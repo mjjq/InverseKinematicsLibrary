@@ -29,10 +29,10 @@ int main()
         SkeletonNode{{300.0f, 20.0f},   0, -Math::PI, Math::PI, ""},
     };
 
-    Skeleton2DBone skeleton1(nodes1);
-    Skeleton2DBone skeleton2(nodes2);
-    Skeleton2DBone skeleton3(nodes3);
-    Skeleton2DBone skeleton4(nodes3);
+    Skeleton2DBone skeleton1(nodes1, 0.0f);
+    Skeleton2DBone skeleton2(nodes2, 0.0f);
+    Skeleton2DBone skeleton3(nodes3, 0.0f);
+    Skeleton2DBone skeleton4(nodes3, 0.0f);
 
     Skeleton2D skeleton;
 

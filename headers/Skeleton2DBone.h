@@ -25,6 +25,7 @@ class Skeleton2DBone
     sf::Vector2f absOffset = {0.0f, 0.0f};
     sf::Vector2f relOffset = {0.0f, 0.0f};
     bool linkedToParent = false;
+    const float initialBaseNodeAngle;
     float baseNodeAngle = 0.0f;
     sf::Vector2f parentOrientation = {1.0f, 0.0f};
 
@@ -53,6 +54,7 @@ class Skeleton2DBone
 public:
     Skeleton2DBone();
     Skeleton2DBone(std::vector<SkeletonNode > _nodes,
+                    float _initialBaseNodeAngle,
                     sf::Vector2f const & _offset = {0.0f, 0.0f});
     void draw(sf::RenderWindow& window);
 
@@ -70,6 +72,8 @@ public:
     void setBaseNodeAngle(float angle);
 
     float getBaseNodeAngle();
+
+    float getInitialBaseNodeAngle();
 
     int getNumNodes();
 

@@ -12,7 +12,9 @@ class JSONSkeletonReader
     static void parseBoneData(nlohmann::json const & j,
                               Skeleton2D & skeleton);
     static void parseIKConstraints(nlohmann::json const & j,
-                                    Skeleton2D & skeleton);
+                                   Skeleton2D & skeleton);
+    static void parseAnimationData(nlohmann::json const & j,
+                                   Skeleton2D & skeleton);
 public:
     static Skeleton2D readFromFile(std::string const & filename, float scaleFactor=1.0f);
 };

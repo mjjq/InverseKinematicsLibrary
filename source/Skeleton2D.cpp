@@ -108,6 +108,11 @@ void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
     ikGroups.insert({ikData.name, hierarchy});
 }
 
+void Skeleton2D::addAnimation(BoneAnimation const & animation)
+{
+    animations.push_back(animation);
+}
+
 
 void Skeleton2D::setTarget(sf::Vector2f const & target,
                std::string const & chainName,
@@ -168,6 +173,21 @@ void Skeleton2D::setRotation(float angleDegree,
     chains[boneName].setRotation(angleDegree, relativeTo);
 
     setTarget({0.0f, 0.0f}, boneName, 0, false, true, Skeleton2DBone::RelativeTo::Current);
+}
+
+void Skeleton2D::animate(float time)
+{
+    for(int i=0; i<animations.size(); ++i)
+    {
+        std::string boneName = animations[i].getBoneName();
+        if(chains.find(boneName) != chains.end())
+        {
+            float angle = animations[i].getRotation(time);
+            setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
+            //float translation = animations[i].getRotation(time);
+            //setTarget(translation, boneName, 0, true, true, Skeleton2DBone::RelativeTo::InitialPose);
+        }
+    }
 }
 
 void Skeleton2D::draw(sf::RenderWindow& window)

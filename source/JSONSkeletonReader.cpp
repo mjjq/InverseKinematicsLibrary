@@ -1,5 +1,6 @@
 #include "JSONSkeletonReader.h"
 #include "Skeleton2D.h"
+#include "BoneAnimation.h"
 
 #include <fstream>
 
@@ -20,6 +21,8 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
         parseBoneData(j, skeleton);
 
         if(!j["ik"].is_null()) parseIKConstraints(j, skeleton);
+
+        if(!j["animations"].is_null()) parseAnimationData(j, skeleton);
 
         return skeleton;
     }
@@ -71,5 +74,35 @@ void JSONSkeletonReader::parseIKConstraints(nlohmann::json const & j,
         ikData.target = currJ.value("target", "");
 
         skeleton.addIKConstraint(ikData);
+    }
+}
+
+void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
+                                            Skeleton2D & skeleton)
+{
+    for(auto &animation : j["animations"])
+    {
+        for(auto &boneJsonData : animation["bones"].items())
+        {
+            BoneAnimationData animData;
+            animData.boneName = boneJsonData.key();
+
+            if(!boneJsonData.value()["rotate"].is_null())
+                for(auto &rotationalData : boneJsonData.value()["rotate"])
+                {
+                    float time = rotationalData["time"];
+                    float angle = rotationalData["angle"];
+                    animData.rotationData.push_back({time, angle});
+                }
+            /*if(!boneJsonData.value()["translate"].is_null())
+                for(auto &translationData : boneJsonData.value()["translate"])
+                {
+                    float time = translationData["time"];
+                    sf::Vector2f position = {translationData["x"], translationData["y"]};
+                    animData.translationData.push_back({time, position});
+                }*/
+
+            skeleton.addAnimation(BoneAnimation(animData));
+        }
     }
 }

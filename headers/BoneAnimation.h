@@ -11,15 +11,21 @@ struct BoneAnimationData
 
     std::string boneName;
 
-    std::vector<TimeRotationPair > angleFuncOfTime;
-    std::vector<TimeTranslationPair > translationFuncOfTime;
+    std::vector<TimeRotationPair > rotationData;
+    std::vector<TimeTranslationPair > translationData;
 };
 
 class BoneAnimation
 {
+    typedef std::pair<float, float> TimeRotationPair;
+    typedef std::pair<float, sf::Vector2f> TimeTranslationPair;
+
     const BoneAnimationData animationData;
 
-
+    template <typename T>
+    T interpolate(std::pair<float, T> const & lowerBound,
+                  std::pair<float, T> const & upperBound,
+                  float time);
 public:
     BoneAnimation(BoneAnimationData const & _animationData);
 

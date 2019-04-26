@@ -3,6 +3,7 @@
 
 #include "SkeletonNode.h"
 #include "Skeleton2DBone.h"
+#include "BoneAnimation.h"
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -25,6 +26,7 @@ class Skeleton2D
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
+    std::vector<BoneAnimation > animations;
 
     const int PAIR_NOT_FOUND = -1;
 
@@ -57,6 +59,8 @@ public:
 
     void addIKConstraint(IKConstraintData const & ikData);
 
+    void addAnimation(BoneAnimation const & animation);
+
     void setTarget(sf::Vector2f const & target,
                    std::string const & chainName,
                    int chainNode,
@@ -68,6 +72,7 @@ public:
                      std::string const & boneName,
                      Skeleton2DBone::RelativeTo const & relativeTo);
 
+    void animate(float time);
     void draw(sf::RenderWindow& window);
 };
 

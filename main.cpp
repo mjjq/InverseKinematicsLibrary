@@ -61,6 +61,8 @@ int main()
     sf::Clock clock;
     clock.restart();
 
+    float time = 0.0f;
+
     while(window.isOpen())
     {
         sf::Event currEvent;
@@ -100,7 +102,9 @@ int main()
             skeletonJ.setRotation(1.0f, sstring, Skeleton2DBone::RelativeTo::Parent);
         }
 
-        float time = clock.getElapsedTime().asSeconds()/1.0f;
+        time += 0.1f; //clock.getElapsedTime().asSeconds()/1.0f;
+        skeletonJ.animate(time);
+        sf::sleep(sf::milliseconds(300));
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);
 

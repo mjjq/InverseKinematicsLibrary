@@ -61,11 +61,9 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
     //nodes[0].orientation = parentOrientation;
 
     if(targetIndex < 0 || targetIndex >= nodes.size())
-    {
         targetIndex = nodes.size()-1;
-        KinematicAlgorithms::inverseK({this}, t+offset);
-    }
-    else if(targetIndex==0)
+
+    if(targetIndex==0)
     {
         KinematicAlgorithms::forwardK({this}, t+offset);
     }

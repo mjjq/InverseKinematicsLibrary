@@ -39,7 +39,8 @@ class Skeleton2D
                            std::string const & child,
                            int linkIndex = -1);
 
-    void updateBaseNodeOrientation(std::string const & childName);
+    void updateBaseNodeOrientation(std::string const & parentName,
+                                   std::string const & childName);
 
     std::vector<std::string > getHierarchy(std::string const & firstNode,
                                            std::string const & lastNode);
@@ -60,18 +61,12 @@ public:
                    std::string const & chainName,
                    int chainNode,
                    bool applyOffset = false,
-                   bool inheritOrientation = true);
-
-    enum RelativeTo
-    {
-        InitialPose,
-        Parent,
-        Current
-    };
+                   bool inheritOrientation = true,
+                   Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
 
     void setRotation(float angleDegree,
                      std::string const & boneName,
-                     RelativeTo const & relativeTo);
+                     Skeleton2DBone::RelativeTo const & relativeTo);
 
     void draw(sf::RenderWindow& window);
 };

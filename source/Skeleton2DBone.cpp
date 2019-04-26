@@ -51,26 +51,66 @@ void Skeleton2DBone::draw(sf::RenderWindow& window)
 }
 
 void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
-                                bool applyOffset)
+                                bool applyOffset,
+                                RelativeTo const & relativeTo)
 {
+    sf::Vector2f finalPosition = t;
+    switch(relativeTo)
+    {
+        case RelativeTo::Current:
+        {
+            finalPosition += nodes[0].position;
+            break;
+        }
+        default:
+            break;
+    }
+
     sf::Vector2f offset = {0.0f, 0.0f};
     if(applyOffset)
         offset = initialBoneData.offset.x * parentOrientation +
                  initialBoneData.offset.y * Math::orthogonal(parentOrientation, 1.0f);
 
-    //nodes[0].orientation = parentOrientation;
+    finalPosition += offset;
 
     if(targetIndex < 0 || targetIndex >= nodes.size())
         targetIndex = nodes.size()-1;
 
     if(targetIndex==0)
     {
-        KinematicAlgorithms::forwardK({this}, t+offset);
+        KinematicAlgorithms::forwardK({this}, finalPosition);
     }
     else
     {
-        KinematicAlgorithms::inverseK({this}, t+offset);
+        KinematicAlgorithms::inverseK({this}, finalPosition);
     }
+}
+
+void Skeleton2DBone::setRotation(float angleDegree,
+                                 RelativeTo const & relativeTo)
+{
+    float currRotation;
+
+    switch(relativeTo)
+    {
+        case RelativeTo::InitialPose:
+        {
+            currRotation = initialBoneData.rotation;
+            break;
+        }
+        case RelativeTo::Parent:
+        {
+            currRotation = 0.0f;
+            break;
+        }
+        case RelativeTo::Current:
+        {
+            currRotation = boneData.rotation;
+            break;
+        }
+    }
+
+    setAngle(currRotation + angleDegree);
 }
 
 

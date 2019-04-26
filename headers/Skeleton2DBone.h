@@ -37,8 +37,20 @@ public:
 
     void draw(sf::RenderWindow& window);
 
+    enum RelativeTo
+    {
+        InitialPose,
+        Parent,
+        Current,
+        World
+    };
+
     void setTarget(sf::Vector2f const & t, int targetIndex = -1,
-                   bool applyOffset = false);
+                   bool applyOffset = false,
+                   RelativeTo const & relativeTo = RelativeTo::World);
+
+    void setRotation(float angleDegree,
+                     RelativeTo const & relativeTo);
 
     SkeletonNode& getNode(int index);
 

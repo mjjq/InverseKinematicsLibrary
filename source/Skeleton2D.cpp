@@ -35,16 +35,16 @@ void Skeleton2D::linkParentToChild(std::string const & parent,
     {
         parentTo.push_back({parent, child});
 
-        updateBaseNodeOrientation(child);
+        updateBaseNodeOrientation(parent, child);
 
         sf::Vector2f parentStartPos = chains[parent].getNode(0).position;
         chains[child].setTarget(parentStartPos, 0, true);
     }
 }
 
-void Skeleton2D::updateBaseNodeOrientation(std::string const & childName)
+void Skeleton2D::updateBaseNodeOrientation(std::string const & parentName,
+                                           std::string const & childName)
 {
-    std::string parentName = getParent(childName);
     if(parentName != NULL_NAME)
     {
         sf::Vector2f parentOrientation = chains[parentName].getOrientation();
@@ -112,14 +112,15 @@ void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
 void Skeleton2D::setTarget(sf::Vector2f const & target,
                std::string const & chainName,
                int chainNode, bool applyOffset,
-               bool inheritOrientation)
+               bool inheritOrientation,
+               Skeleton2DBone::RelativeTo relativeTo)
 {
     if(chains.find(chainName) != chains.end())
     {
-        chains[chainName].setTarget(target, chainNode, applyOffset);
+        chains[chainName].setTarget(target, chainNode, applyOffset, relativeTo);
 
         if(inheritOrientation)
-            updateBaseNodeOrientation(chainName);
+            updateBaseNodeOrientation(getParent(chainName), chainName);
 
         //recursively update targets to children
         for(int i=0; i<parentTo.size(); ++i)
@@ -159,38 +160,14 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
 
 void Skeleton2D::setRotation(float angleDegree,
                              std::string const & boneName,
-                             RelativeTo const & relativeTo)
+                             Skeleton2DBone::RelativeTo const & relativeTo)
 {
     if(chains.find(boneName) == chains.end())
         return;
 
-    sf::Vector2f nodePos = chains[boneName].getNode(0).position;
-    float currRotation;
+    chains[boneName].setRotation(angleDegree, relativeTo);
 
-    switch(relativeTo)
-    {
-        case RelativeTo::InitialPose:
-        {
-            BoneData data = chains[boneName].getInitialData();
-
-            currRotation = data.rotation;
-            break;
-        }
-        case RelativeTo::Parent:
-        {
-            currRotation = 0.0f;
-            break;
-        }
-        case RelativeTo::Current:
-        {
-            BoneData data = chains[boneName].getData();
-            currRotation = data.rotation;
-            break;
-        }
-    }
-
-    chains[boneName].setAngle(currRotation + angleDegree);
-    setTarget(nodePos, boneName, 0, false, true);
+    setTarget({0.0f, 0.0f}, boneName, 0, false, true, Skeleton2DBone::RelativeTo::Current);
 }
 
 void Skeleton2D::draw(sf::RenderWindow& window)

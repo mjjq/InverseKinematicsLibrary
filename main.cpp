@@ -97,7 +97,7 @@ int main()
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         {
-            skeletonJ.setRotation(1.0f, sstring, Skeleton2D::RelativeTo::Parent);
+            skeletonJ.setRotation(1.0f, sstring, Skeleton2DBone::RelativeTo::Parent);
         }
 
         float time = clock.getElapsedTime().asSeconds()/1.0f;

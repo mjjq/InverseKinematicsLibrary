@@ -66,7 +66,7 @@ public:
     {
         InitialPose,
         Parent,
-        World
+        Current
     };
 
     void setRotation(float angleDegree,

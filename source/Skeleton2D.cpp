@@ -1,5 +1,6 @@
 #include "Skeleton2D.h"
 
+#include "KinematicAlgorithms.h"
 
 Skeleton2D::Skeleton2D()
 {}
@@ -34,7 +35,6 @@ void Skeleton2D::linkParentToChild(std::string const & parent,
     {
         parentTo.push_back({parent, child});
 
-        chains[child].setParentNode(chains[parent].getNode(linkIndex));
         updateBaseNodeOrientation(child);
 
         sf::Vector2f parentStartPos = chains[parent].getNode(0).position;
@@ -47,9 +47,9 @@ void Skeleton2D::updateBaseNodeOrientation(std::string const & childName)
     std::string parentName = getParent(childName);
     if(parentName != NULL_NAME)
     {
-        SkeletonNode& parentEndNode = chains[parentName].getNode(-1);
+        sf::Vector2f parentOrientation = chains[parentName].getOrientation();
 
-        chains[childName].updateParentOrientation(parentEndNode.orientation);
+        chains[childName].setParentOrientation(parentOrientation);
     }
 }
 
@@ -65,34 +65,20 @@ void Skeleton2D::addChain(std::string const & name,
 
 void Skeleton2D::addBone(BoneData const & boneData)
 {
-        sf::Vector2f firstNodePos = {0.0f, 0.0f};
+        sf::Vector2f parentPosition = {0.0f, 0.0f};
+        sf::Vector2f parentOrientation = {1.0f, 0.0f};
 
         if(chains.find(boneData.parent) != chains.end())
         {
             SkeletonNode& parentNode = chains[boneData.parent].getNode(-1);
-            firstNodePos = parentNode.position;
+            parentPosition = parentNode.position;
+            parentOrientation = chains[boneData.parent].getOrientation();
         }
 
-        SkeletonNode firstNode(firstNodePos, 0, -Math::PI, Math::PI, "");
-
-        if(boneData.length > 0.0f)
-        {
-            sf::Vector2f relDir = Math::rotate({1.0f, 0.0f}, boneData.rotation);
-
-            sf::Vector2f secondNodePos = firstNodePos + boneData.length * relDir;
-            SkeletonNode secondNode(secondNodePos, 0, -Math::PI, Math::PI, "", true);
-            secondNode.orientation = relDir;
-
-            addChain(boneData.name,
-                     Skeleton2DBone({firstNode, secondNode}, boneData.rotation, boneData.offset),
-                     boneData.parent);
-        }
-        else
-        {
-            addChain(boneData.name,
-                     Skeleton2DBone({firstNode}, boneData.rotation, boneData.offset),
-                     boneData.parent);
-        }
+        addChain(boneData.name,
+                 Skeleton2DBone(boneData, parentPosition, parentOrientation),
+                 boneData.parent,
+                 -1);
 }
 
 std::vector<std::string > Skeleton2D::getHierarchy(std::string const & firstNode,
@@ -130,12 +116,6 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
 {
     if(chains.find(chainName) != chains.end())
     {
-        if(getParent(chainName) != NULL_NAME)
-        {
-            SkeletonNode& baseNode  = chains[chainName].getBaseNode();
-            baseNode.angle = chains[chainName].getBaseNodeAngle();
-        }
-
         chains[chainName].setTarget(target, chainNode, applyOffset);
 
         if(inheritOrientation)
@@ -146,6 +126,8 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
         {
             if(parentTo[i].first == chainName)
             {
+                std::string childName = parentTo[i].second;
+
                 sf::Vector2f lastNodePos = chains[chainName].getNode(0).position;
                 setTarget(lastNodePos, parentTo[i].second, 0, true);
             }
@@ -161,7 +143,7 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
             finalName = boneName;
         }
 
-        Skeleton2DBone::inverseK(target, ikBones);
+        KinematicAlgorithms::inverseK(ikBones, target);
 
         //recursively update targets to children
         for(int i=0; i<parentTo.size(); ++i)
@@ -182,27 +164,33 @@ void Skeleton2D::setRotation(float angleDegree,
     if(chains.find(boneName) == chains.end())
         return;
 
+    sf::Vector2f nodePos = chains[boneName].getNode(0).position;
+    float currRotation;
+
     switch(relativeTo)
     {
         case RelativeTo::InitialPose:
         {
-            SkeletonNode& startNode = chains[boneName].getNode(0);
-            SkeletonNode& endNode = chains[boneName].getNode(-1);
+            BoneData data = chains[boneName].getInitialData();
 
-            float initialAngle = chains[boneName].getInitialBaseNodeAngle();
-            startNode.angle = angleDegree + initialAngle;
-            std::cout << angleDegree << "\n";
-            chains[boneName].setBaseNodeAngle(startNode.angle);
-
-            if(&endNode == &startNode)
-            {
-                startNode.orientation = Math::rotate(startNode.orientation,
-                                                     angleDegree+initialAngle);
-            }
-
-            setTarget(startNode.position, boneName, 0, false, false);
+            currRotation = data.rotation;
+            break;
+        }
+        case RelativeTo::Parent:
+        {
+            currRotation = 0.0f;
+            break;
+        }
+        case RelativeTo::Current:
+        {
+            BoneData data = chains[boneName].getData();
+            currRotation = data.rotation;
+            break;
         }
     }
+
+    chains[boneName].setAngle(currRotation + angleDegree);
+    setTarget(nodePos, boneName, 0, false, true);
 }
 
 void Skeleton2D::draw(sf::RenderWindow& window)

@@ -11,16 +11,16 @@ int main()
     currView.setCenter(0.0f, 0.0f);
     window.setView(currView);
 
-    std::vector<SkeletonNode > nodes1 = {
+    /*std::vector<SkeletonNode > nodes1 = {
         SkeletonNode{{0.0f, 0.0f},    0, -Math::PI/2.0f, Math::PI, ""},
         SkeletonNode{{50.0f,  0.0f},     0, -Math::PI, Math::PI, ""},
-        //SkeletonNode{{100.0f, 0.0f},   0, -Math::PI/2.0f, Math::PI/2.0f, ""},
+        SkeletonNode{{100.0f, 0.0f},   0, -Math::PI/2.0f, Math::PI/2.0f, ""},
     };
     std::vector<SkeletonNode > nodes2 = {
         SkeletonNode{{50.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
-        //SkeletonNode{{200.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
-        //SkeletonNode{{250.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
-        //SkeletonNode{{300.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
+        SkeletonNode{{200.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
+        SkeletonNode{{250.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
+        SkeletonNode{{300.0f, 0.0f},   0, -Math::PI, Math::PI, ""},
     };
     std::vector<SkeletonNode > nodes3 = {
         SkeletonNode{{150.0f, 20.0f},   0, -Math::PI, Math::PI, ""},
@@ -32,12 +32,12 @@ int main()
     Skeleton2DBone skeleton1(nodes1, 0.0f);
     Skeleton2DBone skeleton2(nodes2, 0.0f);
     Skeleton2DBone skeleton3(nodes3, 0.0f);
-    Skeleton2DBone skeleton4(nodes3, 0.0f);
+    Skeleton2DBone skeleton4(nodes3, 0.0f);*/
 
-    Skeleton2D skeleton;
+    //Skeleton2D skeleton;
 
 
-    skeleton.addChain("root", skeleton1, "");
+    /*skeleton.addChain("root", skeleton1, "");
     BoneData data = {
         "second",
         "root",
@@ -45,7 +45,7 @@ int main()
         50.0f,
         90.0f
     };
-    skeleton.addBone(data);
+    skeleton.addBone(data);*/
 
     //skeleton.addChain("second", skeleton2, "root");
     //skeleton.addChain("third", skeleton3, "first");
@@ -97,7 +97,7 @@ int main()
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         {
-            skeletonJ.setRotation(0.01f, sstring, Skeleton2D::RelativeTo::InitialPose);
+            skeletonJ.setRotation(1.0f, sstring, Skeleton2D::RelativeTo::Parent);
         }
 
         float time = clock.getElapsedTime().asSeconds()/1.0f;

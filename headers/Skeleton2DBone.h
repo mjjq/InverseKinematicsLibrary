@@ -22,65 +22,36 @@ class Skeleton2DBone
 {
     std::vector<SkeletonNode > nodes;
 
-    sf::Vector2f absOffset = {0.0f, 0.0f};
-    sf::Vector2f relOffset = {0.0f, 0.0f};
-    bool linkedToParent = false;
-    const float initialBaseNodeAngle;
-    float baseNodeAngle = 0.0f;
+    sf::Vector2f orientation = {1.0f, 0.0f};
     sf::Vector2f parentOrientation = {1.0f, 0.0f};
 
-    enum Direction
-    {
-        Forward,
-        Backward
-    };
+    const BoneData initialBoneData;
+    BoneData boneData;
 
-    bool constrainToAngularRange(SkeletonNode& node1,
-                                 SkeletonNode& node2,
-                                 SkeletonNode& node3);
-
-    void constrainToAngularRange(SkeletonNode& node1,
-                                 SkeletonNode& node2);
-
-    void inverseK(sf::Vector2f const & t,
-                  int baseIndex,
-                  int targetIndex);
-
-    void forwardK(sf::Vector2f const & t,
-                  int targetIndex);
-
-    void resetBeams();
 
 public:
     Skeleton2DBone();
-    Skeleton2DBone(std::vector<SkeletonNode > _nodes,
-                    float _initialBaseNodeAngle,
-                    sf::Vector2f const & _offset = {0.0f, 0.0f});
+    Skeleton2DBone(BoneData const & _boneData,
+                   sf::Vector2f const & _parentPosition = {0.0f, 0.0f},
+                   sf::Vector2f const & _parentOrientation = {1.0f, 0.0f});
+
     void draw(sf::RenderWindow& window);
 
     void setTarget(sf::Vector2f const & t, int targetIndex = -1,
-                   bool applyOffset = false, bool setOffset = false);
-
-    void setParentNode(SkeletonNode& parentNode);
-
-    SkeletonNode& getBaseNode();
+                   bool applyOffset = false);
 
     SkeletonNode& getNode(int index);
 
-    void updateParentOrientation(sf::Vector2f const & orientation);
+    sf::Vector2f getOrientation();
+    void setOrientation(sf::Vector2f const & o);
 
-    void setBaseNodeAngle(float angle);
+    sf::Vector2f getParentOrientation();
+    void setParentOrientation(sf::Vector2f const & po);
 
-    float getBaseNodeAngle();
+    BoneData getInitialData();
+    BoneData getData();
 
-    float getInitialBaseNodeAngle();
-
-    int getNumNodes();
-
-    sf::Vector2f getOffset();
-
-    static void inverseK(sf::Vector2f const & t,
-                              std::vector<Skeleton2DBone* > bones);
+    void setAngle(float angleDegree);
 };
 
 #endif // SKEL2DBONE_H

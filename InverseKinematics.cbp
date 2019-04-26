@@ -42,13 +42,16 @@
 			<Add directory="headers" />
 		</Linker>
 		<Unit filename="extern/json.hpp" />
+		<Unit filename="headers/AngleCalculations.h" />
 		<Unit filename="headers/JSONSkeletonReader.h" />
+		<Unit filename="headers/KinematicAlgorithms.h" />
 		<Unit filename="headers/Math.h" />
 		<Unit filename="headers/Skeleton2D.h" />
 		<Unit filename="headers/Skeleton2DBone.h" />
 		<Unit filename="headers/SkeletonNode.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="source/JSONSkeletonReader.cpp" />
+		<Unit filename="source/KinematicAlgorithms.cpp" />
 		<Unit filename="source/Math.cpp" />
 		<Unit filename="source/Skeleton2D.cpp" />
 		<Unit filename="source/Skeleton2DBone.cpp" />

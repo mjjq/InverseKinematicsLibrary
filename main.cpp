@@ -62,6 +62,7 @@ int main()
     clock.restart();
 
     float time = 0.0f;
+    bool paused = false;
 
     skeletonJ.animate(time);
 
@@ -82,11 +83,17 @@ int main()
                     {
                         time += 0.1f;
                         skeletonJ.animate(time);
+                        std::cout << time << "\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::K)
                     {
                         if(time >= 0.1f) time -= 0.1f;
                         skeletonJ.animate(time);
+                        std::cout << time << "\n";
+                    }
+                    else if(currEvent.key.code == sf::Keyboard::Space)
+                    {
+                        paused = !paused;
                     }
                 }
                 default:
@@ -120,6 +127,11 @@ int main()
 
         //time += 0.01f; //clock.getElapsedTime().asSeconds()/1.0f;
         sf::sleep(sf::milliseconds(16));
+        if(!paused)
+        {
+            time += 0.01f;
+            skeletonJ.animate(time);
+        }
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);
 

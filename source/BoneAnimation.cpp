@@ -25,6 +25,9 @@ T BoneAnimation::interpolate(std::pair<float, T> const & lowerBound,
 
 float BoneAnimation::getRotation(float time)
 {
+    if(animationData.rotationData.size() == 0)
+        return 0.0f;
+
     int lowerBoundIndex = animationData.rotationData.size()-1;
     int upperBoundIndex = 0;
 
@@ -50,7 +53,10 @@ float BoneAnimation::getRotation(float time)
 
 sf::Vector2f BoneAnimation::getTranslation(float time)
 {
-    int lowerBoundIndex = animationData.rotationData.size()-1;
+    if(animationData.translationData.size() == 0)
+        return {0.0f, 0.0f};
+
+    int lowerBoundIndex = animationData.translationData.size()-1;
     int upperBoundIndex = 0;
 
     float maxTime = animationData.translationData[lowerBoundIndex].first;

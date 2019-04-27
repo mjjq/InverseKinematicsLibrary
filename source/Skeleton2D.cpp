@@ -48,8 +48,10 @@ void Skeleton2D::updateBaseNodeOrientation(std::string const & parentName,
     if(parentName != NULL_NAME)
     {
         sf::Vector2f parentOrientation = chains[parentName].getOrientation();
+        sf::Vector2f parentPosition = chains[parentName].getNode(0).position;
 
         chains[childName].setParentOrientation(parentOrientation);
+        chains[childName].setParentPosition(parentPosition);
     }
 }
 
@@ -185,8 +187,8 @@ void Skeleton2D::animate(float time)
         {
             float angle = animations[i].getRotation(time);
             setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
-            //float translation = animations[i].getRotation(time);
-            //setTarget(translation, boneName, 0, true, true, Skeleton2DBone::RelativeTo::InitialPose);
+            sf::Vector2f translation = animations[i].getTranslation(time);
+            setTarget(translation, boneName, 0, true, true, Skeleton2DBone::RelativeTo::Parent);
         }
     }
 }

@@ -62,6 +62,10 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
             finalPosition += nodes[0].position;
             break;
         }
+        case RelativeTo::Parent:
+        {
+            finalPosition += parentPosition;
+        }
         default:
             break;
     }
@@ -138,6 +142,16 @@ sf::Vector2f Skeleton2DBone::getParentOrientation()
 void Skeleton2DBone::setParentOrientation(sf::Vector2f const & po)
 {
     parentOrientation = po;
+}
+
+sf::Vector2f Skeleton2DBone::getParentPosition()
+{
+    return parentPosition;
+}
+
+void Skeleton2DBone::setParentPosition(sf::Vector2f const & pp)
+{
+    parentPosition = pp;
 }
 
 BoneData Skeleton2DBone::getInitialData()

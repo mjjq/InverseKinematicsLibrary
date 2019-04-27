@@ -82,13 +82,14 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
 {
     for(auto &animation : j["animations"])
     {
-        for(auto &boneJsonData : animation["bones"].items())
+        for(auto &boneJsonIterator : animation["bones"].items())
         {
             BoneAnimationData animData;
-            animData.boneName = boneJsonData.key();
+            animData.boneName = boneJsonIterator.key();
 
-            if(!boneJsonData.value()["rotate"].is_null())
-                for(auto &rotationalData : boneJsonData.value()["rotate"])
+            nlohmann::json boneJsonData = boneJsonIterator.value();
+            if(boneJsonData.find("rotate") != boneJsonData.end())
+                for(auto &rotationalData : boneJsonData["rotate"])
                 {
                     float time = rotationalData.value("time", 0.0f);
                     float angle = rotationalData.value("angle", 0.0f);
@@ -98,13 +99,14 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
                     if(angle < -180.0f) angle += 360.0f;
                     animData.rotationData.push_back({time, -angle});
                 }
-            /*if(!boneJsonData.value()["translate"].is_null())
-                for(auto &translationData : boneJsonData.value()["translate"])
+            if(boneJsonData.find("translate") != boneJsonData.end())
+                for(auto &translationData : boneJsonData["translate"])
                 {
                     float time = translationData["time"];
                     sf::Vector2f position = {translationData["x"], translationData["y"]};
+                    position.y = -position.y;
                     animData.translationData.push_back({time, position});
-                }*/
+                }
 
             skeleton.addAnimation(BoneAnimation(animData));
         }

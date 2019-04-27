@@ -54,7 +54,13 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
                                 bool applyOffset,
                                 RelativeTo const & relativeTo)
 {
-    sf::Vector2f finalPosition = t;
+
+    sf::Vector2f offset = {0.0f, 0.0f};
+    if(applyOffset)
+        offset = initialBoneData.offset.x * parentOrientation +
+                 initialBoneData.offset.y * Math::orthogonal(parentOrientation, 1.0f);
+
+    sf::Vector2f finalPosition = t + translation;
     switch(relativeTo)
     {
         case RelativeTo::Current:
@@ -65,15 +71,13 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
         case RelativeTo::Parent:
         {
             finalPosition += parentPosition;
+            //std::cout << "finalpos: " << finalPosition.x << ", " << finalPosition.y << "\n";
+            //std::cout << "offset: " << offset.x << ", " << offset.y << "\n";
+            break;
         }
         default:
             break;
     }
-
-    sf::Vector2f offset = {0.0f, 0.0f};
-    if(applyOffset)
-        offset = initialBoneData.offset.x * parentOrientation +
-                 initialBoneData.offset.y * Math::orthogonal(parentOrientation, 1.0f);
 
     finalPosition += offset;
 
@@ -152,6 +156,11 @@ sf::Vector2f Skeleton2DBone::getParentPosition()
 void Skeleton2DBone::setParentPosition(sf::Vector2f const & pp)
 {
     parentPosition = pp;
+}
+
+void Skeleton2DBone::setTranslation(sf::Vector2f const & tr)
+{
+    translation = tr;
 }
 
 BoneData Skeleton2DBone::getInitialData()

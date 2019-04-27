@@ -1,5 +1,6 @@
 #include "JSONSkeletonReader.h"
 #include "Skeleton2D.h"
+#include "SkeletonAnimation.h"
 #include "BoneAnimation.h"
 
 #include <fstream>
@@ -80,14 +81,17 @@ void JSONSkeletonReader::parseIKConstraints(nlohmann::json const & j,
 void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
                                             Skeleton2D & skeleton)
 {
-    for(auto &animation : j["animations"])
+    for(auto &animationIter : j["animations"].items())
     {
-        for(auto &boneJsonIterator : animation["bones"].items())
+        SkeletonAnimation skelAnimation(animationIter.key());
+
+        nlohmann::json animation = animationIter.value();
+        for(auto &boneJsonIter : animation["bones"].items())
         {
             BoneAnimationData animData;
-            animData.boneName = boneJsonIterator.key();
+            animData.boneName = boneJsonIter.key();
 
-            nlohmann::json boneJsonData = boneJsonIterator.value();
+            nlohmann::json boneJsonData = boneJsonIter.value();
             if(boneJsonData.find("rotate") != boneJsonData.end())
                 for(auto &rotationalData : boneJsonData["rotate"])
                 {
@@ -108,7 +112,9 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
                     animData.translationData.push_back({time, position});
                 }
 
-            skeleton.addAnimation(BoneAnimation(animData));
+            skelAnimation.addBoneAnimation(BoneAnimation(animData));
         }
+
+        skeleton.addAnimation(skelAnimation);
     }
 }

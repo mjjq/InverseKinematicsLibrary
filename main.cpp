@@ -51,12 +51,13 @@ int main()
     //skeleton.addChain("third", skeleton3, "first");
     //skeleton.addChain("fourth", skeleton4, "third");
 
-    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example2.json");
+    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example.json");
     //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
     //skeletonJ.setTarget({000.0f, 000.0f}, "root", 0);
 
     int selector = 2;
     std::string sstring = "root";
+    std::string animationString = "walk";
 
     sf::Clock clock;
     clock.restart();
@@ -64,7 +65,7 @@ int main()
     float time = 0.0f;
     bool paused = false;
 
-    skeletonJ.animate(time);
+    skeletonJ.animate(animationString, time);
 
     while(window.isOpen())
     {
@@ -82,18 +83,23 @@ int main()
                     if(currEvent.key.code == sf::Keyboard::L)
                     {
                         time += 0.1f;
-                        skeletonJ.animate(time);
-                        std::cout << time << "\n";
+                        skeletonJ.animate(animationString, time);
+                        std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::K)
                     {
                         if(time >= 0.1f) time -= 0.1f;
-                        skeletonJ.animate(time);
-                        std::cout << time << "\n";
+                        skeletonJ.animate(animationString, time);
+                        std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::Space)
                     {
                         paused = !paused;
+                    }
+                    else if(currEvent.key.code == sf::Keyboard::R)
+                    {
+                        if(animationString == "walk") animationString = "jump";
+                        else if(animationString == "jump") animationString = "walk";
                     }
                 }
                 default:
@@ -122,7 +128,7 @@ int main()
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         {
-            skeletonJ.setRotation(45.0f, sstring, Skeleton2DBone::RelativeTo::InitialPose);
+            skeletonJ.setRotation(1.0f, sstring, Skeleton2DBone::RelativeTo::Current);
         }
 
         //time += 0.01f; //clock.getElapsedTime().asSeconds()/1.0f;
@@ -130,7 +136,8 @@ int main()
         if(!paused)
         {
             time += 0.01f;
-            skeletonJ.animate(time);
+            skeletonJ.animate(animationString, time);
+            skeletonJ.setTarget({-200.0f + fmod(150.0f*time, 400.0f), 0.0f}, "root", 0);
         }
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);

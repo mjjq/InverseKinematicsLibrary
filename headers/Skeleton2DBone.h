@@ -25,6 +25,7 @@ class Skeleton2DBone
     sf::Vector2f orientation = {1.0f, 0.0f};
     sf::Vector2f parentOrientation = {1.0f, 0.0f};
     sf::Vector2f parentPosition = {0.0f, 0.0f};
+    sf::Vector2f translation = {0.0f, 0.0f};
 
     const BoneData initialBoneData;
     BoneData boneData;
@@ -63,6 +64,8 @@ public:
 
     sf::Vector2f getParentPosition();
     void setParentPosition(sf::Vector2f const & pp);
+
+    void setTranslation(sf::Vector2f const & tr);
 
     BoneData getInitialData();
     BoneData getData();

@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <assert.h>
 
 BoneAnimation::BoneAnimation(BoneAnimationData const & _animationData) :
     animationData{_animationData}
@@ -30,19 +31,20 @@ float BoneAnimation::getRotation(float time)
     float maxTime = animationData.rotationData[lowerBoundIndex].first;
     time = fmod(time, maxTime);
 
-    while(animationData.rotationData[lowerBoundIndex].first >= time)
+    while(animationData.rotationData[lowerBoundIndex].first > time)
         --lowerBoundIndex;
 
     while(animationData.rotationData[upperBoundIndex].first < time)
         ++upperBoundIndex;
 
-    float rotation = interpolate(animationData.rotationData[lowerBoundIndex],
+
+    float rotation = 0.0f;
+    if(lowerBoundIndex == upperBoundIndex)
+        rotation = animationData.rotationData[lowerBoundIndex].second;
+    else
+        rotation = interpolate(animationData.rotationData[lowerBoundIndex],
                                  animationData.rotationData[upperBoundIndex],
                                  time);
-
-    std::cout << time << " time\n";
-    std::cout << maxTime << " maxtime\n";
-    std::cout << rotation << " angle\n";
     return rotation;
 }
 
@@ -54,13 +56,18 @@ sf::Vector2f BoneAnimation::getTranslation(float time)
     float maxTime = animationData.translationData[lowerBoundIndex].first;
     time = fmod(time, maxTime);
 
-    while(animationData.translationData[lowerBoundIndex].first >= time)
+    while(animationData.translationData[lowerBoundIndex].first > time)
         --lowerBoundIndex;
 
     while(animationData.translationData[upperBoundIndex].first < time)
         ++upperBoundIndex;
 
-    sf::Vector2f translation = interpolate(animationData.translationData[lowerBoundIndex],
+    sf::Vector2f translation = {0.0f, 0.0f};
+
+    if(lowerBoundIndex == upperBoundIndex)
+        translation = animationData.translationData[lowerBoundIndex].second;
+    else
+        translation = interpolate(animationData.translationData[lowerBoundIndex],
                                            animationData.translationData[upperBoundIndex],
                                            time);
     return translation;

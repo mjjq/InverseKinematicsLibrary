@@ -63,6 +63,8 @@ int main()
 
     float time = 0.0f;
 
+    skeletonJ.animate(time);
+
     while(window.isOpen())
     {
         sf::Event currEvent;

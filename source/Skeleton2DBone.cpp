@@ -96,8 +96,6 @@ void Skeleton2DBone::setRotation(float angleDegree,
         case RelativeTo::InitialPose:
         {
             currRotation = initialBoneData.rotation;
-            std::cout << "initial angle: " << initialBoneData.rotation << "\n";
-            std::cout << "relative angle: " << angleDegree << "\n";
             break;
         }
         case RelativeTo::Parent:

@@ -183,8 +183,10 @@ void Skeleton2D::animate(float time)
         std::string boneName = animations[i].getBoneName();
         if(chains.find(boneName) != chains.end())
         {
+            std::cout << boneName << "\n";
             float angle = animations[i].getRotation(time);
             setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
+            std::cout << "\n";
             //float translation = animations[i].getRotation(time);
             //setTarget(translation, boneName, 0, true, true, Skeleton2DBone::RelativeTo::InitialPose);
         }

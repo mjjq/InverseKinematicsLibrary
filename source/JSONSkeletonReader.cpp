@@ -90,9 +90,13 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
             if(!boneJsonData.value()["rotate"].is_null())
                 for(auto &rotationalData : boneJsonData.value()["rotate"])
                 {
-                    float time = rotationalData["time"];
-                    float angle = rotationalData["angle"];
-                    animData.rotationData.push_back({time, angle});
+                    float time = rotationalData.value("time", 0.0f);
+                    float angle = rotationalData.value("angle", 0.0f);
+
+                    //be wary of abs(angles) >180.0 as they may interpolate wrong
+                    if(angle > 180.0f) angle -= 360.0f;
+                    if(angle < -180.0f) angle += 360.0f;
+                    animData.rotationData.push_back({time, -angle});
                 }
             /*if(!boneJsonData.value()["translate"].is_null())
                 for(auto &translationData : boneJsonData.value()["translate"])

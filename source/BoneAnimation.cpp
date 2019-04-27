@@ -42,7 +42,7 @@ float BoneAnimation::getRotation(float time)
 
     std::cout << time << " time\n";
     std::cout << maxTime << " maxtime\n";
-    std::cout << rotation << " angle\n\n";
+    std::cout << rotation << " angle\n";
     return rotation;
 }
 

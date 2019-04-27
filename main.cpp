@@ -74,6 +74,19 @@ int main()
                 case(sf::Event::Closed):
                     window.close();
                     break;
+                case(sf::Event::KeyPressed) :
+                {
+                    if(currEvent.key.code == sf::Keyboard::L)
+                    {
+                        time += 0.1f;
+                        skeletonJ.animate(time);
+                    }
+                    else if(currEvent.key.code == sf::Keyboard::K)
+                    {
+                        if(time >= 0.1f) time -= 0.1f;
+                        skeletonJ.animate(time);
+                    }
+                }
                 default:
                     break;
             }
@@ -103,8 +116,7 @@ int main()
             skeletonJ.setRotation(45.0f, sstring, Skeleton2DBone::RelativeTo::InitialPose);
         }
 
-        time += 0.1f; //clock.getElapsedTime().asSeconds()/1.0f;
-        //skeletonJ.animate(time);
+        //time += 0.01f; //clock.getElapsedTime().asSeconds()/1.0f;
         sf::sleep(sf::milliseconds(16));
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);

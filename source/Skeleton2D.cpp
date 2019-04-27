@@ -122,10 +122,11 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
 {
     if(chains.find(chainName) != chains.end())
     {
-        chains[chainName].setTarget(target, chainNode, applyOffset, relativeTo);
-
         if(inheritOrientation)
             updateBaseNodeOrientation(getParent(chainName), chainName);
+
+        chains[chainName].setTarget(target, chainNode, applyOffset, relativeTo);
+
 
         //recursively update targets to children
         for(int i=0; i<parentTo.size(); ++i)

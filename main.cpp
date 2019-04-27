@@ -95,16 +95,17 @@ int main()
         {
             skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
                                sstring, selector);
+                            //std::cout << "\n";
 
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         {
-            skeletonJ.setRotation(1.0f, sstring, Skeleton2DBone::RelativeTo::Parent);
+            skeletonJ.setRotation(45.0f, sstring, Skeleton2DBone::RelativeTo::InitialPose);
         }
 
         time += 0.1f; //clock.getElapsedTime().asSeconds()/1.0f;
-        skeletonJ.animate(time);
-        sf::sleep(sf::milliseconds(300));
+        //skeletonJ.animate(time);
+        sf::sleep(sf::milliseconds(16));
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);
 

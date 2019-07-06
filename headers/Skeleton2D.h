@@ -23,17 +23,19 @@ struct IKConstraintData
 
 class Skeleton2D
 {
+    const std::string NULL_NAME = "";
+    const int PAIR_NOT_FOUND = -1;
+
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
     std::map<std::string, SkeletonAnimation > animations;
 
-    const int PAIR_NOT_FOUND = -1;
+    std::string currentAnimationName = NULL_NAME;
 
     int getParentChildPair(std::string const & parent,
                            std::string const & child);
 
-    const std::string NULL_NAME = "";
 
     std::string getParent(std::string const & childName);
 
@@ -46,6 +48,8 @@ class Skeleton2D
 
     std::vector<std::string > getHierarchy(std::string const & firstNode,
                                            std::string const & lastNode);
+
+    void resetSkeleton();
 
 public:
     Skeleton2D();
@@ -72,8 +76,9 @@ public:
                      std::string const & boneName,
                      Skeleton2DBone::RelativeTo const & relativeTo);
 
-    void animate(std::string const & animationName,
-                 float time);
+    void setAnimation(std::string const & animationName);
+
+    void animate(float time);
     void draw(sf::RenderWindow& window);
 };
 

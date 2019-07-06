@@ -178,14 +178,30 @@ void Skeleton2D::setRotation(float angleDegree,
     setTarget({0.0f, 0.0f}, boneName, 0, false, true, Skeleton2DBone::RelativeTo::Current);
 }
 
-void Skeleton2D::animate(std::string const & animationName,
-                         float time)
+void Skeleton2D::resetSkeleton()
+{
+    for(auto it = chains.begin(); it != chains.end(); ++it)
+    {
+        setRotation(0.0f, it->first, Skeleton2DBone::RelativeTo::InitialPose);
+    }
+}
+
+void Skeleton2D::setAnimation(std::string const & animationName)
 {
     if(animations.find(animationName) == animations.end())
         return;
 
+    currentAnimationName = animationName;
+    resetSkeleton();
+}
+
+void Skeleton2D::animate(float time)
+{
+    if(currentAnimationName == NULL_NAME)
+        return;
+
     std::vector<BoneAnimation > & currAnimation =
-            animations[animationName].getAnimations();
+            animations[currentAnimationName].getAnimations();
 
     for(int i=0; i<currAnimation.size(); ++i)
     {

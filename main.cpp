@@ -65,7 +65,8 @@ int main()
     float time = 0.0f;
     bool paused = false;
 
-    skeletonJ.animate(animationString, time);
+    //skeletonJ.animate(animationString, time);
+    skeletonJ.setAnimation(animationString);
 
     while(window.isOpen())
     {
@@ -83,13 +84,13 @@ int main()
                     if(currEvent.key.code == sf::Keyboard::L)
                     {
                         time += 0.1f;
-                        skeletonJ.animate(animationString, time);
+                        skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::K)
                     {
                         if(time >= 0.1f) time -= 0.1f;
-                        skeletonJ.animate(animationString, time);
+                        skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::Space)
@@ -100,6 +101,8 @@ int main()
                     {
                         if(animationString == "walk") animationString = "jump";
                         else if(animationString == "jump") animationString = "walk";
+
+                        skeletonJ.setAnimation(animationString);
                     }
                 }
                 default:
@@ -119,13 +122,7 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) sstring = "hip";
 
 
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
-        {
-            skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
-                               sstring, selector);
-                            //std::cout << "\n";
 
-        }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         {
             skeletonJ.setRotation(1.0f, sstring, Skeleton2DBone::RelativeTo::Current);
@@ -136,11 +133,19 @@ int main()
         if(!paused)
         {
             time += 0.01f;
-            skeletonJ.animate(animationString, time);
+            skeletonJ.animate(time);
             skeletonJ.setTarget({-200.0f + fmod(150.0f*time, 400.0f), 0.0f}, "root", 0);
         }
         //skeletonJ.setTarget({50.0f*cos(time), 000.0f+50.0f*sin(time)}, "left leg", 3);
         //skeleton.setTarget({300.0f, 300.0f-50.0f*sin(time)}, "third", -1);
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+        {
+            skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
+                               sstring, selector);
+                            //std::cout << "\n";
+
+        }
 
         window.clear(sf::Color::Black);
 

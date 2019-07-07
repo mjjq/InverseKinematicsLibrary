@@ -23,6 +23,11 @@ T BoneAnimation::interpolate(std::pair<float, T> const & lowerBound,
            fraction * (upperBound.second - lowerBound.second);
 }
 
+float BoneAnimation::getDuration()
+{
+    return animationData.duration;
+}
+
 float BoneAnimation::getRotation(float time)
 {
     if(animationData.rotationData.size() == 0)

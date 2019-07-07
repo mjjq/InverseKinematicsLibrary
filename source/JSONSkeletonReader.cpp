@@ -91,6 +91,8 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
             BoneAnimationData animData;
             animData.boneName = boneJsonIter.key();
 
+            float animationDurationTime = 0.0f;
+
             nlohmann::json boneJsonData = boneJsonIter.value();
             if(boneJsonData.find("rotate") != boneJsonData.end())
                 for(auto &rotationalData : boneJsonData["rotate"])
@@ -102,6 +104,8 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
                     if(angle > 180.0f) angle -= 360.0f;
                     if(angle < -180.0f) angle += 360.0f;
                     animData.rotationData.push_back({time, -angle});
+
+                    if(time > animationDurationTime) animationDurationTime = time;
                 }
             if(boneJsonData.find("translate") != boneJsonData.end())
                 for(auto &translationData : boneJsonData["translate"])
@@ -110,7 +114,11 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
                     sf::Vector2f position = {translationData["x"], translationData["y"]};
                     position.y = -position.y;
                     animData.translationData.push_back({time, position});
+
+                    if(time > animationDurationTime) animationDurationTime = time;
                 }
+
+            animData.duration = animationDurationTime;
 
             skelAnimation.addBoneAnimation(BoneAnimation(animData));
         }

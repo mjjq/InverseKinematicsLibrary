@@ -112,7 +112,8 @@ void Skeleton2D::addIKConstraint(IKConstraintData const & ikData)
 
 void Skeleton2D::addAnimation(SkeletonAnimation animation)
 {
-    animations.insert({animation.getName(), animation});
+    //animations.insert({animation.getName(), animation});
+    animations.addAnimation(animation);
 }
 
 
@@ -188,20 +189,23 @@ void Skeleton2D::resetSkeleton()
 
 void Skeleton2D::setAnimation(std::string const & animationName)
 {
-    if(animations.find(animationName) == animations.end())
+    if(!animations.exists(animationName))
         return;
 
-    currentAnimationName = animationName;
+    animations.transitionTo(animationName, 0.0f);
+    //currentAnimationName = animationName;
     resetSkeleton();
 }
 
 void Skeleton2D::animate(float time)
 {
-    if(currentAnimationName == NULL_NAME)
-        return;
+    //if(currentAnimationName == NULL_NAME)
+    //    return;
 
     std::vector<BoneAnimation > & currAnimation =
-            animations[currentAnimationName].getAnimations();
+            animations.getCurrentAnimationData(time);
+            //animations[currentAnimationName].getAnimations();
+    float localAnimTime = animations.getLocalTime();
 
     for(int i=0; i<currAnimation.size(); ++i)
     {
@@ -209,9 +213,9 @@ void Skeleton2D::animate(float time)
         if(chains.find(boneName) != chains.end())
         {
             //std::cout << boneName << "\n";
-            float angle = currAnimation[i].getRotation(time);
+            float angle = currAnimation[i].getRotation(localAnimTime);
             setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
-            sf::Vector2f translation = currAnimation[i].getTranslation(time);
+            sf::Vector2f translation = currAnimation[i].getTranslation(localAnimTime);
             chains[boneName].setTranslation(translation);
 
             setTarget({0.0f, 0.0f}, boneName, 0, true, true, Skeleton2DBone::RelativeTo::Parent);

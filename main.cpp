@@ -62,7 +62,7 @@ int main()
     sf::Clock clock;
     clock.restart();
 
-    float time = 0.0f;
+    float time = 0.01f;
     bool paused = false;
 
     //skeletonJ.animate(animationString, time);
@@ -83,13 +83,13 @@ int main()
                 {
                     if(currEvent.key.code == sf::Keyboard::L)
                     {
-                        time += 0.1f;
+                        time += 0.01f;
                         skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::K)
                     {
-                        if(time >= 0.1f) time -= 0.1f;
+                        time -= 0.01f;
                         skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
@@ -132,7 +132,7 @@ int main()
         sf::sleep(sf::milliseconds(16));
         if(!paused)
         {
-            time += 0.01f;
+            //time += 0.01f;
             skeletonJ.animate(time);
             skeletonJ.setTarget({-200.0f + fmod(150.0f*time, 400.0f), 0.0f}, "root", 0);
         }

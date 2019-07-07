@@ -10,9 +10,11 @@ struct BoneAnimationData
     typedef std::pair<float, sf::Vector2f> TimeTranslationPair;
 
     std::string boneName;
+    float duration;
 
     std::vector<TimeRotationPair > rotationData;
     std::vector<TimeTranslationPair > translationData;
+
 };
 
 class BoneAnimation
@@ -29,6 +31,7 @@ class BoneAnimation
 public:
     BoneAnimation(BoneAnimationData const & _animationData);
 
+    float getDuration();
     float getRotation(float time);
     sf::Vector2f getTranslation(float time);
     std::string getBoneName();

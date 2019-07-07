@@ -4,6 +4,7 @@
 #include "SkeletonNode.h"
 #include "Skeleton2DBone.h"
 #include "SkeletonAnimation.h"
+#include "AnimationSet.h"
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -29,7 +30,7 @@ class Skeleton2D
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
-    std::map<std::string, SkeletonAnimation > animations;
+    AnimationSet animations;
 
     std::string currentAnimationName = NULL_NAME;
 

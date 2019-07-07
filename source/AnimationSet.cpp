@@ -60,6 +60,10 @@ std::vector<BoneAnimation > & AnimationSet::getCurrentAnimationData(float deltaT
         }
         localTime = 0.0f;
     }
+    else if(localTime < 0.0f)
+    {
+        localTime = animations[currentAnimation].getAnimationDuration();
+    }
 
     return animations[currentAnimation].getAnimations();
 }

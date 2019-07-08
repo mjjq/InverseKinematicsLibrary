@@ -32,8 +32,6 @@ class Skeleton2D
     std::map<std::string, std::vector<std::string> > ikGroups;
     AnimationSet animations;
 
-    std::string currentAnimationName = NULL_NAME;
-
     int getParentChildPair(std::string const & parent,
                            std::string const & child);
 
@@ -77,10 +75,12 @@ public:
                      std::string const & boneName,
                      Skeleton2DBone::RelativeTo const & relativeTo);
 
-    void setAnimation(std::string const & animationName);
+    void setAnimation(std::string const & animationName,
+                      AnimationSet::TransitionType const & transitionType);
 
     void animate(float time);
     void draw(sf::RenderWindow& window);
+    std::map<std::string, Skeleton2DBone > getBoneData();
 };
 
 

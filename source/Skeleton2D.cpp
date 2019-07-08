@@ -187,24 +187,23 @@ void Skeleton2D::resetSkeleton()
     }
 }
 
-void Skeleton2D::setAnimation(std::string const & animationName)
+void Skeleton2D::setAnimation(std::string const & animationName,
+                              AnimationSet::TransitionType const & transitionType)
 {
     if(!animations.exists(animationName))
         return;
 
-    animations.transitionTo(animationName, 0.0f);
-    //currentAnimationName = animationName;
+    animations.transitionTo(animationName, transitionType, 0.0f);
+
     resetSkeleton();
 }
 
 void Skeleton2D::animate(float time)
 {
-    //if(currentAnimationName == NULL_NAME)
-    //    return;
 
     std::vector<BoneAnimation > & currAnimation =
             animations.getCurrentAnimationData(time);
-            //animations[currentAnimationName].getAnimations();
+
     float localAnimTime = animations.getLocalTime();
 
     for(int i=0; i<currAnimation.size(); ++i)
@@ -212,14 +211,12 @@ void Skeleton2D::animate(float time)
         std::string boneName = currAnimation[i].getBoneName();
         if(chains.find(boneName) != chains.end())
         {
-            //std::cout << boneName << "\n";
             float angle = currAnimation[i].getRotation(localAnimTime);
             setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
             sf::Vector2f translation = currAnimation[i].getTranslation(localAnimTime);
             chains[boneName].setTranslation(translation);
 
             setTarget({0.0f, 0.0f}, boneName, 0, true, true, Skeleton2DBone::RelativeTo::Parent);
-            //std::cout << "translation: " << translation.x << ", " << translation.y << "\n\n";
         }
     }
 }
@@ -228,4 +225,9 @@ void Skeleton2D::draw(sf::RenderWindow& window)
 {
     for(auto it = chains.begin(); it != chains.end(); ++it)
         it->second.draw(window);
+}
+
+std::map<std::string, Skeleton2DBone > Skeleton2D::getBoneData()
+{
+    return chains;
 }

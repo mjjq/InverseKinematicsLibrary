@@ -5,17 +5,26 @@
 
 class AnimationSet
 {
+public:
+    enum TransitionType {
+        Immediate,
+        EndOfAnimation
+    };
+
+private:
     std::vector<SkeletonAnimation > animations;
     int currentAnimation = 0;
     int nextAnimation = 0;
 
     bool switchAnimationState = false;
+    TransitionType animationTransitionType;
 
     int getIndex(std::string const & animationName);
 
     float localTime = 0.0f;
 
 public:
+
     bool exists(std::string const & animationName);
 
     void addAnimation(SkeletonAnimation animation);
@@ -23,6 +32,7 @@ public:
     void setAnimation(std::string const & animationName);
 
     void transitionTo(std::string const & animationName,
+                      TransitionType const & transitionType,
                       float transitionLength);
     std::vector<BoneAnimation > & getCurrentAnimationData(float deltaTime);
 

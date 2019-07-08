@@ -40,25 +40,38 @@ void AnimationSet::setAnimation(std::string const & animationName)
 }
 
 void AnimationSet::transitionTo(std::string const & animationName,
-                                float transitionLength)
+                      TransitionType const & transitionType,
+                      float transitionLength)
 {
     nextAnimation = getIndex(animationName);
 
     switchAnimationState = true;
+
+    animationTransitionType = transitionType;
 }
 
 std::vector<BoneAnimation > & AnimationSet::getCurrentAnimationData(float deltaTime)
 {
     localTime += deltaTime;
+
+    if(switchAnimationState && animationTransitionType == TransitionType::Immediate)
+    {
+        currentAnimation = nextAnimation;
+        nextAnimation = -1;
+        switchAnimationState = false;
+        localTime = 0.0f;
+    }
+
     if(localTime >= animations[currentAnimation].getAnimationDuration())
     {
-        if(switchAnimationState)
+        localTime = 0.0f;
+
+        if(switchAnimationState && animationTransitionType == TransitionType::EndOfAnimation)
         {
             currentAnimation = nextAnimation;
             nextAnimation = -1;
             switchAnimationState = false;
         }
-        localTime = 0.0f;
     }
     else if(localTime < 0.0f)
     {

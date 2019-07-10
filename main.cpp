@@ -4,7 +4,7 @@
 
 int main()
 {
-    sf::RenderWindow window;
+    /*sf::RenderWindow window;
     sf::VideoMode mode(800, 800);
     window.create(mode, "test");
     sf::View currView;
@@ -104,5 +104,5 @@ int main()
         skeletonJ.draw(window);
 
         window.display();
-    }
+    }*/
 }

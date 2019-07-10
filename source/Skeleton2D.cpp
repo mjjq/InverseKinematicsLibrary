@@ -2,8 +2,6 @@
 
 #include "KinematicAlgorithms.h"
 
-Skeleton2D::Skeleton2D()
-{}
 
 int Skeleton2D::getParentChildPair(std::string const & parent,
                            std::string const & child)
@@ -230,4 +228,17 @@ void Skeleton2D::draw(sf::RenderWindow& window)
 std::map<std::string, Skeleton2DBone > Skeleton2D::getBoneData()
 {
     return chains;
+}
+
+std::vector<sf::Vector2f > Skeleton2D::getJointPositions()
+{
+    std::vector<sf::Vector2f > jointPositions;
+
+    for(auto it = chains.begin(); it != chains.end(); ++it)
+    {
+        jointPositions.push_back(it->second.getNode(0).position);
+        jointPositions.push_back(it->second.getNode(-1).position);
+    }
+
+    return jointPositions;
 }

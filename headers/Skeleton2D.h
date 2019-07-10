@@ -24,8 +24,8 @@ struct IKConstraintData
 
 class Skeleton2D
 {
-    const std::string NULL_NAME = "";
-    const int PAIR_NOT_FOUND = -1;
+    std::string NULL_NAME = "";
+    int PAIR_NOT_FOUND = -1;
 
     std::map<std::string, Skeleton2DBone > chains;
     std::vector<std::pair<std::string, std::string> > parentTo;
@@ -51,7 +51,6 @@ class Skeleton2D
     void resetSkeleton();
 
 public:
-    Skeleton2D();
 
     void addBone(BoneData const & boneData);
 
@@ -81,6 +80,8 @@ public:
     void animate(float time);
     void draw(sf::RenderWindow& window);
     std::map<std::string, Skeleton2DBone > getBoneData();
+
+    std::vector<sf::Vector2f > getJointPositions();
 };
 
 

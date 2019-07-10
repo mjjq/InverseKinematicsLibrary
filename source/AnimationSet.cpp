@@ -9,7 +9,6 @@ bool AnimationSet::exists(std::string const & animationName)
         if(animations[index].getName() == animationName)
             return true;
 
-
         ++index;
     }
     return false;

@@ -6,7 +6,7 @@
 int Skeleton2D::getParentChildPair(std::string const & parent,
                            std::string const & child)
 {
-    for(int i=0; i<parentTo.size(); ++i)
+    for(int i=0; i<(int)parentTo.size(); ++i)
     {
         if(parentTo[i].first == parent && parentTo[i].second == child)
             return i;
@@ -17,7 +17,7 @@ int Skeleton2D::getParentChildPair(std::string const & parent,
 
 std::string Skeleton2D::getParent(std::string const & childName)
 {
-    for(int i=0; i<parentTo.size(); ++i)
+    for(int i=0; i<(int)parentTo.size(); ++i)
         if(parentTo[i].second == childName)
             return parentTo[i].first;
 
@@ -130,7 +130,7 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
 
 
         //recursively update targets to children
-        for(int i=0; i<parentTo.size(); ++i)
+        for(int i=0; i<(int)parentTo.size(); ++i)
         {
             if(parentTo[i].first == chainName)
             {
@@ -154,7 +154,7 @@ void Skeleton2D::setTarget(sf::Vector2f const & target,
         KinematicAlgorithms::inverseK(ikBones, target);
 
         //recursively update targets to children
-        for(int i=0; i<parentTo.size(); ++i)
+        for(int i=0; i<(int)parentTo.size(); ++i)
         {
             if(parentTo[i].first == finalName)
             {
@@ -171,6 +171,9 @@ void Skeleton2D::setRotation(float angleDegree,
 {
     if(chains.find(boneName) == chains.end())
         return;
+
+    if(scale.x < 0.0f) angleDegree = 180.0f - angleDegree;
+    if(scale.y < 0.0f) angleDegree = -angleDegree;
 
     chains[boneName].setRotation(angleDegree, relativeTo);
 
@@ -204,14 +207,17 @@ void Skeleton2D::animate(float time)
 
     float localAnimTime = animations.getLocalTime();
 
-    for(int i=0; i<currAnimation.size(); ++i)
+    for(int i=0; i<(int)currAnimation.size(); ++i)
     {
         std::string boneName = currAnimation[i].getBoneName();
         if(chains.find(boneName) != chains.end())
         {
             float angle = currAnimation[i].getRotation(localAnimTime);
             setRotation(angle, boneName, Skeleton2DBone::RelativeTo::InitialPose);
+
             sf::Vector2f translation = currAnimation[i].getTranslation(localAnimTime);
+            //translation.x *= scale.x;
+            //translation.y *= scale.y;
             chains[boneName].setTranslation(translation);
 
             setTarget({0.0f, 0.0f}, boneName, 0, true, true, Skeleton2DBone::RelativeTo::Parent);
@@ -241,4 +247,21 @@ std::vector<sf::Vector2f > Skeleton2D::getJointPositions()
     }
 
     return jointPositions;
+}
+
+BoneData Skeleton2D::getBoneData(std::string const & boneName)
+{
+    return chains[boneName].getData();
+}
+
+void Skeleton2D::setScale(sf::Vector2f const & _scale)
+{
+    scale = _scale;
+
+    sf::Vector2f rootNodePos = (getBoneData("root")).position;
+
+    for(auto it = chains.begin(); it != chains.end(); ++it)
+    {
+        it->second.setScale(scale, rootNodePos);
+    }
 }

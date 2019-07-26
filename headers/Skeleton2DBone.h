@@ -14,6 +14,9 @@ struct BoneData
     sf::Vector2f offset;
     float length;
     float rotation;
+
+    sf::Vector2f position;
+    sf::Vector2f parentPosition;
 };
 
 
@@ -22,14 +25,13 @@ class Skeleton2DBone
 {
     std::vector<SkeletonNode > nodes;
 
+    const BoneData initialBoneData;
+    BoneData boneData;
+
     sf::Vector2f orientation = {1.0f, 0.0f};
     sf::Vector2f parentOrientation = {1.0f, 0.0f};
     sf::Vector2f parentPosition = {0.0f, 0.0f};
     sf::Vector2f translation = {0.0f, 0.0f};
-
-    const BoneData initialBoneData;
-    BoneData boneData;
-
 
 public:
     Skeleton2DBone();
@@ -44,7 +46,8 @@ public:
         InitialPose,
         Parent,
         Current,
-        World
+        World,
+        Orthogonal
     };
 
     void setTarget(sf::Vector2f const & t, int targetIndex = -1,
@@ -71,6 +74,9 @@ public:
     BoneData getData();
 
     void setAngle(float angleDegree);
+
+    void setScale(sf::Vector2f const & scale,
+                  sf::Vector2f const & rootNodePos);
 };
 
 #endif // SKEL2DBONE_H

@@ -32,6 +32,8 @@ class Skeleton2D
     std::map<std::string, std::vector<std::string> > ikGroups;
     AnimationSet animations;
 
+    sf::Vector2f scale = {1.0f, 1.0f};
+
     int getParentChildPair(std::string const & parent,
                            std::string const & child);
 
@@ -80,8 +82,11 @@ public:
     void animate(float time);
     void draw(sf::RenderWindow& window);
     std::map<std::string, Skeleton2DBone > getBoneData();
+    BoneData getBoneData(std::string const & boneName);
 
     std::vector<sf::Vector2f > getJointPositions();
+
+    void setScale(sf::Vector2f const & _scale);
 };
 
 

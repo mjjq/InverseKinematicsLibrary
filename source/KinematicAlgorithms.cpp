@@ -34,6 +34,7 @@ bool KinematicAlgorithms::constrainToAngularRange(SkeletonNode& node1,
     }
 
     return false;*/
+    return false;
 }
 
 //void KinematicAlgorithms::constrainToAngularRange(SkeletonNode& node1,
@@ -162,7 +163,7 @@ void KinematicAlgorithms::inverseK(std::vector<Skeleton2DBone* > bones,
 
             bones[i]->setOrientation(Math::norm(pip1-pi));
 
-            SkeletonNode& prevNode = bones[i-1]->getNode(-1);
+            //SkeletonNode& prevNode = bones[i-1]->getNode(-1);
 
             /*sf::Vector2f offset = bones[i-1]->getOffset() -
                                  sf::Vector2f{bones[i-1]->getNode(0).distanceToNext, 0.0f};
@@ -203,7 +204,7 @@ void KinematicAlgorithms::forwardK(std::vector<Skeleton2DBone* > bones,
 
     bones[0]->getNode(0).position = t;
 
-    for(int i=0; i<bones.size(); ++i)
+    for(int i=0; i<(int)bones.size(); ++i)
     {
         Skeleton2DBone& currBone = *bones[i];
         BoneData currBoneData = currBone.getData();
@@ -221,7 +222,7 @@ void KinematicAlgorithms::forwardK(std::vector<Skeleton2DBone* > bones,
 
         currBone.setOrientation(newDir);
 
-        if(i < bones.size()-1)
+        if(i < (int)bones.size()-1)
             bones[i+1]->setParentOrientation(newDir);
     }
 }

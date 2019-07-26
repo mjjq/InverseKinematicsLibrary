@@ -4,7 +4,7 @@
 
 int main()
 {
-    /*sf::RenderWindow window;
+    sf::RenderWindow window;
     sf::VideoMode mode(800, 800);
     window.create(mode, "test");
     sf::View currView;
@@ -24,6 +24,7 @@ int main()
     bool paused = false;
 
     skeletonJ.setAnimation(animationString, AnimationSet::TransitionType::Immediate);
+    skeletonJ.setScale({-1.0f, 1.0f});
 
     while(window.isOpen())
     {
@@ -40,13 +41,13 @@ int main()
                 {
                     if(currEvent.key.code == sf::Keyboard::L)
                     {
-                        time += 0.001f;
+                        //time += 0.001f;
                         skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
                     else if(currEvent.key.code == sf::Keyboard::K)
                     {
-                        time -= 0.001f;
+                        //time -= 0.001f;
                         skeletonJ.animate(time);
                         std::cout << "time: " << time << "\n\n";
                     }
@@ -88,14 +89,14 @@ int main()
         sf::sleep(sf::milliseconds(16));
         if(!paused)
         {
-            skeletonJ.animate(time);
-            skeletonJ.setTarget({-200.0f + fmod(150.0f*time, 400.0f), 0.0f}, "root", 0);
+            //skeletonJ.animate(time);
+            //skeletonJ.setTarget({-200.0f + fmod(150.0f*time, 400.0f), 0.0f}, "root", 0);
         }
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
         {
             skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
-                               sstring, selector);
+                               sstring, selector,false, true);
 
         }
 
@@ -104,5 +105,5 @@ int main()
         skeletonJ.draw(window);
 
         window.display();
-    }*/
+    }
 }

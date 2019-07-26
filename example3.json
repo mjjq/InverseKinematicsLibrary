@@ -120,6 +120,29 @@
 
 
 "animations": {
+	"idle":{
+		"bones": {
+			"left upper leg": {
+				"rotate": [
+					{ "time": 0, "angle": -26.55 },
+					{ "time": 0.1333, "angle": -8.78 },
+					{ "time": 0.2666, "angle": 9.51 },
+					{ "time": 0.4, "angle": 30.74 },
+					{ "time": 0.5333, "angle": 25.33 },
+					{ "time": 0.6666, "angle": 26.11 },
+					{ "time": 0.8, "angle": -7.7 },
+					{ "time": 0.9333, "angle": -21.19 },
+					{ "time": 1.0666, "angle": -26.55 }
+				],
+				"translate": [
+					{ "time": 0, "x": -3, "y": -2.25 },
+					{ "time": 0.4, "x": -2.18, "y": -2.25 },
+					{ "time": 1.0666, "x": -3, "y": -2.25 }
+				]
+			}
+		}
+	},
+	
 	"walk": {
 		"bones": {
 			"left upper leg": {

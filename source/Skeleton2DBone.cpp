@@ -39,7 +39,7 @@ void Skeleton2DBone::draw(sf::RenderWindow& window)
     shape.setPosition(nodes[0].position);
     window.draw(shape);
 
-    for(int i=0; i<nodes.size()-1; ++i)
+    for(int i=0; i<(int)nodes.size()-1; ++i)
     {
         line[0].position = nodes[i].position;
         line[1].position = nodes[i+1].position;
@@ -75,13 +75,35 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
             //std::cout << "offset: " << offset.x << ", " << offset.y << "\n";
             break;
         }
+        case RelativeTo::Orthogonal:
+        {
+            float vecLength1 = Math::square(t-nodes[0].position) -
+                                boneData.length*boneData.length;
+
+            if(vecLength1 > 0.0f)
+            {
+                sf::Vector2f nodePos = nodes[nodes.size()-1].position;
+                for(int i=0; i<5; ++i)
+                {
+                    sf::Vector2f relVector = (t - nodePos);
+                    sf::Vector2f orthog = (Math::orthogonal(relVector, 1.0f));
+
+                    nodePos = nodes[0].position + Math::norm(orthog)*boneData.length;
+                }
+
+                sf::Vector2f newT = nodePos;//orthog + nodes[0].position;
+
+                finalPosition = newT + translation;
+            }
+            break;
+        }
         default:
             break;
     }
 
     finalPosition += offset;
 
-    if(targetIndex < 0 || targetIndex >= nodes.size())
+    if(targetIndex < 0 || targetIndex >= (int)nodes.size())
         targetIndex = nodes.size()-1;
 
     if(targetIndex==0)
@@ -97,7 +119,7 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
 void Skeleton2DBone::setRotation(float angleDegree,
                                  RelativeTo const & relativeTo)
 {
-    float currRotation;
+    float currRotation = 0.0f;
 
     switch(relativeTo)
     {
@@ -116,6 +138,8 @@ void Skeleton2DBone::setRotation(float angleDegree,
             currRotation = boneData.rotation;
             break;
         }
+        default:
+            break;
     }
 
     setAngle(currRotation + angleDegree);
@@ -170,10 +194,25 @@ BoneData Skeleton2DBone::getInitialData()
 
 BoneData Skeleton2DBone::getData()
 {
-    return boneData;
+    BoneData data = boneData;
+    data.position = nodes[0].position;
+    data.parentPosition = nodes[1].position;
+    return data;
 }
 
 void Skeleton2DBone::setAngle(float angleDegree)
 {
     boneData.rotation = angleDegree;
+}
+
+void Skeleton2DBone::setScale(sf::Vector2f const & scale,
+                              sf::Vector2f const & rootNodePos)
+{
+    for(int i=0; i<nodes.size(); ++i)
+    {
+        nodes[i].position -= rootNodePos;
+        nodes[i].position.x *= scale.x;
+        nodes[i].position.y *= scale.y;
+        nodes[i].position += rootNodePos;
+    }
 }

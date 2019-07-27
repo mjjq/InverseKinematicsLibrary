@@ -4,21 +4,18 @@
 
 Skeleton2DBone::Skeleton2DBone() : initialBoneData{BoneData()} {}
 
-Skeleton2DBone::Skeleton2DBone(BoneData const & _boneData,
-                               sf::Vector2f const & _parentPosition,
-                               sf::Vector2f const & _parentOrientation) :
+Skeleton2DBone::Skeleton2DBone(BoneData const & _boneData) :
     initialBoneData{_boneData},
-    boneData{_boneData},
-    parentOrientation{_parentOrientation}
+    boneData{_boneData}
 {
-    SkeletonNode firstNode(_parentPosition);
+    SkeletonNode firstNode(_boneData.parentPosition);
     nodes.push_back(firstNode);
 
     if(boneData.length > 0.0f)
     {
-        sf::Vector2f relDir = Math::rotate(_parentOrientation, boneData.rotation);
+        sf::Vector2f relDir = Math::rotate(_boneData.parentOrientation, boneData.rotation);
 
-        sf::Vector2f secondNodePos = _parentPosition + boneData.length * relDir;
+        sf::Vector2f secondNodePos = _boneData.parentPosition + boneData.length * relDir;
         SkeletonNode secondNode(secondNodePos);
 
         nodes.push_back(secondNode);
@@ -57,10 +54,15 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
 
     sf::Vector2f offset = {0.0f, 0.0f};
     if(applyOffset)
-        offset = initialBoneData.offset.x * parentOrientation +
-                 initialBoneData.offset.y * Math::orthogonal(parentOrientation, 1.0f);
+    {
+        offset = initialBoneData.offset.x * boneData.parentOrientation +
+                 initialBoneData.offset.y * Math::orthogonal(boneData.parentOrientation, 1.0f);
+        //offset.x *= boneData.scale.x;
+        //offset.y *= boneData.scale.y;
+        //std::cout << boneData.scale.x << "\n";
+    }
 
-    sf::Vector2f finalPosition = t + translation;
+    sf::Vector2f finalPosition = t + boneData.translation;
     switch(relativeTo)
     {
         case RelativeTo::Current:
@@ -70,7 +72,7 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
         }
         case RelativeTo::Parent:
         {
-            finalPosition += parentPosition;
+            finalPosition += boneData.parentPosition;
             //std::cout << "finalpos: " << finalPosition.x << ", " << finalPosition.y << "\n";
             //std::cout << "offset: " << offset.x << ", " << offset.y << "\n";
             break;
@@ -93,7 +95,7 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
 
                 sf::Vector2f newT = nodePos;//orthog + nodes[0].position;
 
-                finalPosition = newT + translation;
+                finalPosition = newT + boneData.translation;
             }
             break;
         }
@@ -142,6 +144,7 @@ void Skeleton2DBone::setRotation(float angleDegree,
             break;
     }
 
+
     setAngle(currRotation + angleDegree);
 }
 
@@ -152,39 +155,39 @@ SkeletonNode& Skeleton2DBone::getNode(int index)
     return nodes[index];
 }
 
-sf::Vector2f Skeleton2DBone::getOrientation()
+/*sf::Vector2f Skeleton2DBone::getOrientation()
 {
-    return orientation;
-}
+    return boneDataorientation;
+}*/
 
 void Skeleton2DBone::setOrientation(sf::Vector2f const & o)
 {
-    orientation = o;
+    boneData.orientation = o;
 }
 
-sf::Vector2f Skeleton2DBone::getParentOrientation()
+/*sf::Vector2f Skeleton2DBone::getParentOrientation()
 {
     return parentOrientation;
-}
+}*/
 
 void Skeleton2DBone::setParentOrientation(sf::Vector2f const & po)
 {
-    parentOrientation = po;
+    boneData.parentOrientation = po;
 }
 
-sf::Vector2f Skeleton2DBone::getParentPosition()
+/*sf::Vector2f Skeleton2DBone::getParentPosition()
 {
     return parentPosition;
-}
+}*/
 
 void Skeleton2DBone::setParentPosition(sf::Vector2f const & pp)
 {
-    parentPosition = pp;
+    boneData.parentPosition = pp;
 }
 
 void Skeleton2DBone::setTranslation(sf::Vector2f const & tr)
 {
-    translation = tr;
+    boneData.translation = tr;
 }
 
 BoneData Skeleton2DBone::getInitialData()
@@ -205,14 +208,32 @@ void Skeleton2DBone::setAngle(float angleDegree)
     boneData.rotation = angleDegree;
 }
 
-void Skeleton2DBone::setScale(sf::Vector2f const & scale,
-                              sf::Vector2f const & rootNodePos)
+void Skeleton2DBone::setScale(sf::Vector2f const & scale)
 {
-    for(int i=0; i<nodes.size(); ++i)
+    /*for(int i=0; i<nodes.size(); ++i)
     {
         nodes[i].position -= rootNodePos;
         nodes[i].position.x *= scale.x;
         nodes[i].position.y *= scale.y;
         nodes[i].position += rootNodePos;
-    }
+
+        if(scale.x < 0.0f)
+        {
+            boneData.rotation = 180.0f - boneData.rotation;
+        }
+        if(scale.y < 0.0f)
+        {
+            boneData.rotation = -boneData.rotation;
+        }
+    }*/
+    //boneData.scale = scale;
+    /*orientation.x *= scale.x;
+    orientation.y *= scale.y;
+    parentOrientation.x *= scale.x;
+    parentOrientation.y *= scale.y;
+    translation.x *= scale.x;
+    translation.y *= scale.y;
+    boneData.offset.x *= scale.x;
+    boneData.offset.y *= scale.y;
+    if(scale.x < 0.0f) boneData.rotation = -boneData.rotation;*/
 }

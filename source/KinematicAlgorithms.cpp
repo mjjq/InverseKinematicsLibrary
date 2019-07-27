@@ -210,10 +210,10 @@ void KinematicAlgorithms::forwardK(std::vector<Skeleton2DBone* > bones,
         BoneData currBoneData = currBone.getData();
 
         resultantAngle = currBoneData.rotation;
-        resultantVector = Math::rotate(currBone.getParentOrientation(),
+        resultantVector = Math::rotate(currBoneData.parentOrientation,
                                        resultantAngle);
         assert(!std::isnan(resultantAngle));
-        assert(!std::isnan(bones[i]->getOrientation().x));
+        assert(!std::isnan(currBoneData.orientation.x));
 
         currBone.getNode(-1).position = currBone.getNode(0).position +
                                         resultantVector * currBoneData.length;

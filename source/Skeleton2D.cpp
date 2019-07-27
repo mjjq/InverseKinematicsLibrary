@@ -45,8 +45,10 @@ void Skeleton2D::updateBaseNodeOrientation(std::string const & parentName,
 {
     if(parentName != NULL_NAME)
     {
-        sf::Vector2f parentOrientation = chains[parentName].getOrientation();
-        sf::Vector2f parentPosition = chains[parentName].getNode(0).position;
+        BoneData data = chains[parentName].getData();
+
+        sf::Vector2f parentOrientation = data.orientation;
+        sf::Vector2f parentPosition = data.position;
 
         chains[childName].setParentOrientation(parentOrientation);
         chains[childName].setParentPosition(parentPosition);
@@ -63,20 +65,28 @@ void Skeleton2D::addChain(std::string const & name,
     linkParentToChild(parentName, name, linkIndex);
 }
 
-void Skeleton2D::addBone(BoneData const & boneData)
+void Skeleton2D::addBone(BoneData boneData)
 {
-        sf::Vector2f parentPosition = {0.0f, 0.0f};
-        sf::Vector2f parentOrientation = {1.0f, 0.0f};
+
+        /*(if(boneData.scale.x < 0.0f)
+        {
+            boneData.rotation = -boneData.rotation;
+            boneData.offset.y = -boneData.offset.y;
+            parentOrientation.x = -parentOrientation.x;
+        }*/
 
         if(chains.find(boneData.parent) != chains.end())
         {
             SkeletonNode& parentNode = chains[boneData.parent].getNode(-1);
-            parentPosition = parentNode.position;
-            parentOrientation = chains[boneData.parent].getOrientation();
+            sf::Vector2f parentPosition = parentNode.position;
+            sf::Vector2f parentOrientation = chains[boneData.parent].getData().orientation;
+
+            boneData.parentPosition = parentPosition;
+            boneData.parentOrientation = parentOrientation;
         }
 
         addChain(boneData.name,
-                 Skeleton2DBone(boneData, parentPosition, parentOrientation),
+                 Skeleton2DBone(boneData),
                  boneData.parent,
                  -1);
 }
@@ -172,8 +182,8 @@ void Skeleton2D::setRotation(float angleDegree,
     if(chains.find(boneName) == chains.end())
         return;
 
-    if(scale.x < 0.0f) angleDegree = 180.0f - angleDegree;
-    if(scale.y < 0.0f) angleDegree = -angleDegree;
+    /*if(scale.x < 0.0f) angleDegree = 180.0f - angleDegree;
+    if(scale.y < 0.0f) angleDegree = -angleDegree;*/
 
     chains[boneName].setRotation(angleDegree, relativeTo);
 
@@ -258,10 +268,8 @@ void Skeleton2D::setScale(sf::Vector2f const & _scale)
 {
     scale = _scale;
 
-    sf::Vector2f rootNodePos = (getBoneData("root")).position;
-
     for(auto it = chains.begin(); it != chains.end(); ++it)
     {
-        it->second.setScale(scale, rootNodePos);
+        it->second.setScale(scale);
     }
 }

@@ -12,11 +12,16 @@ struct BoneData
     std::string name;
     std::string parent;
     sf::Vector2f offset;
+    sf::Vector2f scale = {1.0f, 1.0f};
     float length;
     float rotation;
 
     sf::Vector2f position;
-    sf::Vector2f parentPosition;
+
+    sf::Vector2f orientation = {1.0f, 0.0f};
+    sf::Vector2f parentOrientation = {1.0f, 0.0f};
+    sf::Vector2f parentPosition = {0.0f, 0.0f};
+    sf::Vector2f translation = {0.0f, 0.0f};
 };
 
 
@@ -28,16 +33,10 @@ class Skeleton2DBone
     const BoneData initialBoneData;
     BoneData boneData;
 
-    sf::Vector2f orientation = {1.0f, 0.0f};
-    sf::Vector2f parentOrientation = {1.0f, 0.0f};
-    sf::Vector2f parentPosition = {0.0f, 0.0f};
-    sf::Vector2f translation = {0.0f, 0.0f};
 
 public:
     Skeleton2DBone();
-    Skeleton2DBone(BoneData const & _boneData,
-                   sf::Vector2f const & _parentPosition = {0.0f, 0.0f},
-                   sf::Vector2f const & _parentOrientation = {1.0f, 0.0f});
+    Skeleton2DBone(BoneData const & _boneData);
 
     void draw(sf::RenderWindow& window);
 
@@ -75,8 +74,7 @@ public:
 
     void setAngle(float angleDegree);
 
-    void setScale(sf::Vector2f const & scale,
-                  sf::Vector2f const & rootNodePos);
+    void setScale(sf::Vector2f const & scale);
 };
 
 #endif // SKEL2DBONE_H

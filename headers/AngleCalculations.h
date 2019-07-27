@@ -66,8 +66,10 @@ public:
 
     static float calcAngleToParent(Skeleton2DBone& bone)
     {
-        sf::Vector2f d1hat = bone.getParentOrientation();
-        sf::Vector2f d2hat = bone.getOrientation();
+        BoneData data = bone.getData();
+
+        sf::Vector2f d1hat = data.parentOrientation;
+        sf::Vector2f d2hat = data.orientation;
         sf::Vector2f od1hat = Math::orthogonal(d1hat, 1.0f);
 
         Quadrant boneQuadrant = getVectorQuadrant(od1hat, d1hat, d2hat);

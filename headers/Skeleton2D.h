@@ -54,7 +54,7 @@ class Skeleton2D
 
 public:
 
-    void addBone(BoneData const & boneData);
+    void addBone(BoneData boneData);
 
     void addChain(std::string const & name,
                   Skeleton2DBone chain,

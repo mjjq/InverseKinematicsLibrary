@@ -55,14 +55,17 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
     sf::Vector2f offset = {0.0f, 0.0f};
     if(applyOffset)
     {
+
         offset = initialBoneData.offset.x * boneData.parentOrientation +
                  initialBoneData.offset.y * Math::orthogonal(boneData.parentOrientation, 1.0f);
+        //std::cout << offset.x << " offset\n";
+        //offset.x *= -1.0f;
         //offset.x *= boneData.scale.x;
         //offset.y *= boneData.scale.y;
         //std::cout << boneData.scale.x << "\n";
     }
 
-    sf::Vector2f finalPosition = t + boneData.translation;
+    sf::Vector2f finalPosition = t + boneData.translation + offset;
     switch(relativeTo)
     {
         case RelativeTo::Current:
@@ -103,8 +106,6 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
             break;
     }
 
-    finalPosition += offset;
-
     if(targetIndex < 0 || targetIndex >= (int)nodes.size())
         targetIndex = nodes.size()-1;
 
@@ -144,6 +145,7 @@ void Skeleton2DBone::setRotation(float angleDegree,
             break;
     }
 
+    //if(boneData.scale.x < 0.0f) currRotation = -currRotation;
 
     setAngle(currRotation + angleDegree);
 }
@@ -226,7 +228,15 @@ void Skeleton2DBone::setScale(sf::Vector2f const & scale)
             boneData.rotation = -boneData.rotation;
         }
     }*/
-    //boneData.scale = scale;
+    boneData.scale = scale;
+
+
+    std::cout << scale.x << "\n";
+
+    //boneData.orientation.x *= scale.x;
+    //boneData.parentOrientation.x *= scale.x;
+
+    //if(scale.x < 0.0f) boneData.rotation = -boneData.rotation;
     /*orientation.x *= scale.x;
     orientation.y *= scale.y;
     parentOrientation.x *= scale.x;
@@ -236,4 +246,11 @@ void Skeleton2DBone::setScale(sf::Vector2f const & scale)
     boneData.offset.x *= scale.x;
     boneData.offset.y *= scale.y;
     if(scale.x < 0.0f) boneData.rotation = -boneData.rotation;*/
+}
+
+void Skeleton2DBone::setData(BoneData _data)
+{
+    std::cout << boneData.position.x << "b4\n";
+    boneData = _data;
+    std::cout << boneData.position.x << "aft\n";
 }

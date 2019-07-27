@@ -78,6 +78,7 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::U)) sstring = "right limb";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "torso";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) sstring = "hip";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::N)) sstring = "left upper leg";
 
 
 
@@ -95,7 +96,7 @@ int main()
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
         {
-            skeletonJ.setTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
+            skeletonJ.externalSetTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
                                sstring, selector,false, true);
 
         }

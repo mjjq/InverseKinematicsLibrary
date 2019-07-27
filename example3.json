@@ -40,7 +40,26 @@
 ],
 
 
-
+"ik": [
+   {
+      "name": "left limb",
+      "order": 2,
+      "bones": [ "left shoulder", "left hand" ],
+      "target": "left hand",
+      "mix": 0.5,
+      "bendPositive": false,
+      "compress": true
+   },
+   {
+      "name": "right limb",
+      "order": 2,
+      "bones": [ "right shoulder", "right hand" ],
+      "target": "right hand",
+      "mix": 0.5,
+      "bendPositive": false,
+      "compress": true
+   }
+],
 
 "skins": {
 	"default": {

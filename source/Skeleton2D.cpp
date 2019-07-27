@@ -237,18 +237,77 @@ void Skeleton2D::animate(float time)
 
 void Skeleton2D::draw(sf::RenderWindow& window)
 {
-    for(auto it = chains.begin(); it != chains.end(); ++it)
-        it->second.draw(window);
+    std::map<std::string, BoneData > transChain = getBoneData();
+    //for(auto it = transChain.begin(); it != transChain.end(); ++it)
+    //    it->second.draw(window);
+
+    float radius = 5.0f;
+    sf::CircleShape shape(radius);
+    shape.setOrigin({radius, radius});
+    sf::VertexArray line(sf::LineStrip, 2);
+    line[0].color = sf::Color::White;
+    line[1].color = sf::Color::White;
+
+
+    for(auto it = transChain.begin(); it != transChain.end(); ++it)
+    {
+        line[0].position = it->second.position;
+        line[1].position = it->second.position + it->second.length * it->second.orientation;
+
+        window.draw(line);
+
+        shape.setPosition(line[1].position);
+        window.draw(shape);
+    }
 }
 
-std::map<std::string, Skeleton2DBone > Skeleton2D::getBoneData()
+std::map<std::string, BoneData > Skeleton2D::getBoneData()
 {
-    return chains;
+    std::map<std::string, BoneData > transChain;
+
+    BoneData tempData;
+    sf::Vector2f rootNodePos = chains["root"].getData().position;
+
+    for(auto it = chains.begin(); it != chains.end(); ++it)
+    {
+        tempData = it->second.getData();
+        tempData.offset.x *= scale.x;
+        tempData.offset.y *= scale.y;
+        tempData.orientation.x *= scale.x;
+        tempData.orientation.y *= scale.y;
+        tempData.parentOrientation.x *= scale.x;
+        tempData.parentOrientation.y *= scale.y;
+
+        sf::Vector2f relParentPos = tempData.parentPosition - rootNodePos;
+        tempData.parentPosition = rootNodePos + sf::Vector2f{scale.x * relParentPos.x,
+                                                   scale.y * relParentPos.y};
+
+        sf::Vector2f relPos = tempData.position - rootNodePos;
+        tempData.position = rootNodePos + sf::Vector2f{scale.x * relPos.x,
+                                                   scale.y * relPos.y};
+
+        //std::cout << it->second.getData().position.x << "before\n";
+        //std::cout << tempData.position.x << "temp\n";
+        //it->second.setData(tempData);
+        //std::cout << it->first << "\n";
+        //std::cout << it->second.getData().position.x << "after\n";
+
+        transChain.insert({it->first, tempData});
+    }
+
+    /*std::cout << transChain.size() << " tcsize\n";
+    std::cout << chains.size() << " chsize\n";
+    std::cout << chains["left upper leg"].getData().position.x << "old\n";
+    std::cout << transChain["left upper leg"].position.x << "new\n\n";*/
+
+    return transChain;
 }
 
-std::vector<sf::Vector2f > Skeleton2D::getJointPositions()
+/*std::vector<sf::Vector2f > Skeleton2D::getJointPositions()
 {
     std::vector<sf::Vector2f > jointPositions;
+
+    BoneData tempData;
 
     for(auto it = chains.begin(); it != chains.end(); ++it)
     {
@@ -257,10 +316,30 @@ std::vector<sf::Vector2f > Skeleton2D::getJointPositions()
     }
 
     return jointPositions;
-}
+}*/
 
 BoneData Skeleton2D::getBoneData(std::string const & boneName)
 {
+    BoneData tempData;
+
+    tempData = chains[boneName].getData();
+    tempData.offset.x *= scale.x;
+    tempData.offset.y *= scale.y;
+    tempData.orientation.x *= scale.x;
+    tempData.orientation.y *= scale.y;
+    tempData.parentOrientation.x *= scale.x;
+    tempData.parentOrientation.y *= scale.y;
+
+    sf::Vector2f rootNodePos = chains["root"].getData().position;
+
+    sf::Vector2f relParentPos = tempData.parentPosition - rootNodePos;
+    tempData.parentPosition = rootNodePos + sf::Vector2f{scale.x * relParentPos.x,
+                                               scale.y * relParentPos.y};
+
+    sf::Vector2f relPos = tempData.position - rootNodePos;
+    tempData.position = rootNodePos + sf::Vector2f{scale.x * relPos.x,
+                                               scale.y * relPos.y};
+
     return chains[boneName].getData();
 }
 
@@ -272,4 +351,26 @@ void Skeleton2D::setScale(sf::Vector2f const & _scale)
     {
         it->second.setScale(scale);
     }
+}
+
+
+void Skeleton2D::externalSetTarget(sf::Vector2f const & target,
+                   std::string const & chainName,
+                   int chainNode,
+                   bool applyOffset,
+                   bool inheritOrientation,
+                   Skeleton2DBone::RelativeTo relativeTo)
+{
+    sf::Vector2f transformedPos = target;
+
+    if(chainName != "root")
+    {
+        sf::Vector2f rootNodePos = chains["root"].getData().position;
+
+        sf::Vector2f relParentPos = target - rootNodePos;
+        transformedPos = rootNodePos + sf::Vector2f{scale.x * relParentPos.x,
+                                                   scale.y * relParentPos.y};
+    }
+
+    setTarget(transformedPos, chainName, chainNode, applyOffset, inheritOrientation, relativeTo);
 }

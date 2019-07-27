@@ -72,6 +72,8 @@ public:
     BoneData getInitialData();
     BoneData getData();
 
+    void setData(BoneData _data);
+
     void setAngle(float angleDegree);
 
     void setScale(sf::Vector2f const & scale);

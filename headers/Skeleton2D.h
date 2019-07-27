@@ -52,6 +52,13 @@ class Skeleton2D
 
     void resetSkeleton();
 
+    void setTarget(sf::Vector2f const & target,
+                   std::string const & chainName,
+                   int chainNode,
+                   bool applyOffset = false,
+                   bool inheritOrientation = true,
+                   Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
+
 public:
 
     void addBone(BoneData boneData);
@@ -65,12 +72,6 @@ public:
 
     void addAnimation(SkeletonAnimation animation);
 
-    void setTarget(sf::Vector2f const & target,
-                   std::string const & chainName,
-                   int chainNode,
-                   bool applyOffset = false,
-                   bool inheritOrientation = true,
-                   Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
 
     void setRotation(float angleDegree,
                      std::string const & boneName,
@@ -81,12 +82,19 @@ public:
 
     void animate(float time);
     void draw(sf::RenderWindow& window);
-    std::map<std::string, Skeleton2DBone > getBoneData();
+    std::map<std::string, BoneData > getBoneData();
     BoneData getBoneData(std::string const & boneName);
 
     std::vector<sf::Vector2f > getJointPositions();
 
     void setScale(sf::Vector2f const & _scale);
+
+    void externalSetTarget(sf::Vector2f const & target,
+                   std::string const & chainName,
+                   int chainNode,
+                   bool applyOffset = false,
+                   bool inheritOrientation = true,
+                   Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
 };
 
 

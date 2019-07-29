@@ -320,9 +320,7 @@ std::map<std::string, BoneData > Skeleton2D::getBoneData()
 
 BoneData Skeleton2D::getBoneData(std::string const & boneName)
 {
-    BoneData tempData;
-
-    tempData = chains[boneName].getData();
+    BoneData tempData = chains[boneName].getData();
     tempData.offset.x *= scale.x;
     tempData.offset.y *= scale.y;
     tempData.orientation.x *= scale.x;
@@ -340,7 +338,7 @@ BoneData Skeleton2D::getBoneData(std::string const & boneName)
     tempData.position = rootNodePos + sf::Vector2f{scale.x * relPos.x,
                                                scale.y * relPos.y};
 
-    return chains[boneName].getData();
+    return tempData;
 }
 
 void Skeleton2D::setScale(sf::Vector2f const & _scale)

@@ -40,31 +40,11 @@
 ],
 
 
-"ik": [
-   {
-      "name": "left limb",
-      "order": 2,
-      "bones": [ "left shoulder", "left hand" ],
-      "target": "left hand",
-      "mix": 0.5,
-      "bendPositive": false,
-      "compress": true
-   },
-   {
-      "name": "right limb",
-      "order": 2,
-      "bones": [ "right shoulder", "right hand" ],
-      "target": "right hand",
-      "mix": 0.5,
-      "bendPositive": false,
-      "compress": true
-   }
-],
 
 "skins": {
 	"default": {
 		"left shoulder": {
-			"left-shoulder": { "x": 23.74, "y": 0.11, "rotation": 62.01, "width": 34, "height": 53 }
+			"left-shoulder": { "x": 63.74, "y": 0.11, "rotation": 62.01, "width": 34, "height": 53 }
 		},
 		"left arm": {
 			"left-arm": { "x": 15.11, "y": -0.44, "rotation": 33.84, "width": 35, "height": 29 }

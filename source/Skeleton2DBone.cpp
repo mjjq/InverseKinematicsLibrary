@@ -231,7 +231,6 @@ void Skeleton2DBone::setScale(sf::Vector2f const & scale)
     boneData.scale = scale;
 
 
-    std::cout << scale.x << "\n";
 
     //boneData.orientation.x *= scale.x;
     //boneData.parentOrientation.x *= scale.x;
@@ -250,7 +249,5 @@ void Skeleton2DBone::setScale(sf::Vector2f const & scale)
 
 void Skeleton2DBone::setData(BoneData _data)
 {
-    std::cout << boneData.position.x << "b4\n";
     boneData = _data;
-    std::cout << boneData.position.x << "aft\n";
 }

@@ -20,7 +20,21 @@ struct IKConstraintData
     std::string target;
 };
 
+struct SlotData
+{
+    std::string name;
+    std::string bone;
+    std::string attachment;
+};
 
+struct SkinData
+{
+    std::string name;
+    std::string attachment;
+    sf::Vector2f offset;
+    float rotation;
+    sf::Vector2f size;
+};
 
 class Skeleton2D
 {
@@ -31,6 +45,8 @@ class Skeleton2D
     std::vector<std::pair<std::string, std::string> > parentTo;
     std::map<std::string, std::vector<std::string> > ikGroups;
     AnimationSet animations;
+    std::vector<SlotData > slots;
+    std::vector<SkinData > skins;
 
     sf::Vector2f scale = {1.0f, 1.0f};
 
@@ -72,6 +88,10 @@ public:
 
     void addAnimation(SkeletonAnimation animation);
 
+    void addSlot(SlotData slotData) {slots.push_back(slotData);}
+
+    void addSkin(SkinData skin) {skins.push_back(skin);}
+
 
     void setRotation(float angleDegree,
                      std::string const & boneName,
@@ -84,10 +104,13 @@ public:
     void draw(sf::RenderWindow& window);
     std::map<std::string, BoneData > getBoneData();
     BoneData getBoneData(std::string const & boneName);
+    std::vector<SlotData > getSlotData() { return slots; }
+    std::vector<SkinData > getSkinData() { return skins; }
 
     std::vector<sf::Vector2f > getJointPositions();
 
     void setScale(sf::Vector2f const & _scale);
+    sf::Vector2f getScale() { return scale; }
 
     void externalSetTarget(sf::Vector2f const & target,
                    std::string const & chainName,
@@ -95,6 +118,7 @@ public:
                    bool applyOffset = false,
                    bool inheritOrientation = true,
                    Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
+
 };
 
 

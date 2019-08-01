@@ -26,7 +26,6 @@
 	{ "name": "left foot", "bone": "left foot", "attachment": "left-foot" },
 	{ "name": "left lower leg", "bone": "left lower leg", "attachment": "left-lower-leg" },
 	{ "name": "left upper leg", "bone": "left upper leg", "attachment": "left-upper-leg" },
-	{ "name": "pelvis", "bone": "pelvis", "attachment": "pelvis" },
 	{ "name": "right foot", "bone": "right foot", "attachment": "right-foot" },
 	{ "name": "right lower leg", "bone": "right lower leg", "attachment": "right-lower-leg" },
 	{ "name": "right upper leg", "bone": "right upper leg", "attachment": "right-upper-leg" },
@@ -61,9 +60,6 @@
 		"left upper leg": {
 			"left-upper-leg": { "x": 26.12, "y": -1.85, "rotation": 89.09, "width": 33, "height": 67 }
 		},
-		"pelvis": {
-			"pelvis": { "x": -4.83, "y": 10.62, "width": 63, "height": 47 }
-		},
 		"right foot": {
 			"right-foot": { "x": 19.02, "y": 8.47, "rotation": 1.52, "width": 67, "height": 30 }
 		},
@@ -81,10 +77,6 @@
 		},
 		"head": {
 			"head": { "x": 53.94, "y": -5.75, "rotation": -86.9, "width": 121, "height": 132 }
-		},
-		"eyes": {
-			"eyes": { "x": 28.94, "y": -32.92, "rotation": -86.9, "width": 34, "height": 27 },
-			"eyes-closed": { "x": 28.77, "y": -32.86, "rotation": -86.9, "width": 34, "height": 27 }
 		},
 		"right shoulder": {
 			"right-shoulder": { "x": 25.86, "y": 0.03, "rotation": 134.44, "width": 52, "height": 51 }

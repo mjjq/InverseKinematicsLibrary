@@ -25,6 +25,10 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
 
         if(!j["animations"].is_null()) parseAnimationData(j, skeleton);
 
+        if(!j["slots"].is_null()) parseSlotData(j, skeleton);
+
+        if(!j["skins"].is_null()) parseSkinData(j, skeleton);
+
         return skeleton;
     }
 
@@ -124,5 +128,49 @@ void JSONSkeletonReader::parseAnimationData(nlohmann::json const & j,
         }
 
         skeleton.addAnimation(skelAnimation);
+    }
+}
+
+
+void JSONSkeletonReader::parseSlotData(nlohmann::json const & j,
+                              Skeleton2D & skeleton)
+{
+    SlotData data;
+    for(auto &currJ : j["slots"])
+    {
+        data.name = currJ.value("name", "");
+        data.bone = currJ.value("bone", "");
+        data.attachment = currJ.value("attachment", "");
+
+        skeleton.addSlot(data);
+    }
+}
+
+void JSONSkeletonReader::parseSkinData(nlohmann::json const & j,
+                          Skeleton2D & skeleton)
+{
+    SkinData data;
+
+    auto currJ = j["skins"];
+    for(auto &boneJsonIter : currJ["default"].items())
+    {
+        data.name = boneJsonIter.key();
+        nlohmann::json bone = boneJsonIter.value();
+
+        for(auto &attachmentIter : bone.items())
+        {
+            data.attachment = attachmentIter.key();
+            nlohmann::json attachmentParams = attachmentIter.value();
+
+            data.offset.x = attachmentParams.value("x", 0.0f);
+            data.offset.y = attachmentParams.value("y", 0.0f);
+
+            data.rotation = attachmentParams.value("rotation", 0.0f);
+
+            data.size.x = attachmentParams.value("width", 0.0f);
+            data.size.y = attachmentParams.value("height", 0.0f);
+
+            skeleton.addSkin(data);
+        }
     }
 }

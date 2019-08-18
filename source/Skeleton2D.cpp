@@ -329,6 +329,9 @@ std::map<std::string, BoneData > Skeleton2D::getBoneData()
 
 BoneData Skeleton2D::getBoneData(std::string const & boneName)
 {
+    if(chains.find(boneName) == chains.end())
+        return BoneData();
+
     BoneData tempData = chains[boneName].getData();
     tempData.offset.x *= scale.x;
     tempData.offset.y *= scale.y;

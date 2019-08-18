@@ -11,7 +11,7 @@ int main()
     currView.setCenter(0.0f, 0.0f);
     window.setView(currView);
 
-    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example3.json");
+    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("spineboy-pro.json");
 
     int selector = 2;
     std::string sstring = "root";
@@ -25,6 +25,8 @@ int main()
 
     skeletonJ.setAnimation(animationString, AnimationSet::TransitionType::Immediate);
     //skeletonJ.setScale({-1.0f, 1.0f});
+
+    skeletonJ.getBoneData("ofidsoifj");
 
     while(window.isOpen())
     {

@@ -37,6 +37,7 @@ bool KinematicAlgorithms::constrainToAngularRange(SkeletonNode& node1,
     return false;
 }
 
+
 //void KinematicAlgorithms::constrainToAngularRange(SkeletonNode& node1,
 //                             SkeletonNode& node2)
 //{
@@ -51,6 +52,13 @@ void KinematicAlgorithms::inverseK(std::vector<Skeleton2DBone* > bones,
                                    sf::Vector2f const & t)
 {
     int lastIndex = bones.size();
+
+    if(lastIndex == 1 && bones[0]->getData().length < 1e-12)
+    {
+        bones[0]->getNode(0).position = t;
+        return;
+    }
+
     sf::Vector2f b = bones[0]->getNode(0).position;
     sf::Vector2f pn = bones[lastIndex-1]->getNode(-1).position;
 

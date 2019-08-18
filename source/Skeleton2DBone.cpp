@@ -20,6 +20,7 @@ Skeleton2DBone::Skeleton2DBone(BoneData const & _boneData) :
 
         nodes.push_back(secondNode);
     }
+
 }
 
 
@@ -108,6 +109,7 @@ void Skeleton2DBone::setTarget(sf::Vector2f const & t, int targetIndex,
 
     if(targetIndex < 0 || targetIndex >= (int)nodes.size())
         targetIndex = nodes.size()-1;
+
 
     if(targetIndex==0)
     {

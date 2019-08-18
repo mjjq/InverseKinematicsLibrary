@@ -1,7 +1,7 @@
 {
 "bones": [
 	{ "name": "root" },
-	{ "name": "hip", "parent": "root", "x": 0.64, "y": 114.41 },
+	{ "name": "hip", "parent": "root", "x": 0.64, "y": 14.41 },
 	{ "name": "left upper leg", "parent": "hip", "length": 50.39, "x": 14.45, "y": 2.81, "rotation": -89.09 },
 	{ "name": "left lower leg", "parent": "left upper leg", "length": 56.45, "x": 51.78, "y": 3.46, "rotation": -16.65 },
 	{ "name": "left foot", "parent": "left lower leg", "length": 46.5, "x": 64.02, "y": -8.67, "rotation": 102.43 },
@@ -17,7 +17,8 @@
 	{ "name": "left shoulder", "parent": "torso", "length": 44.19, "x": 78.96, "y": -15.75, "rotation": -156.96 },
 	{ "name": "left arm", "parent": "left shoulder", "length": 35.62, "x": 44.19, "y": -0.01, "rotation": 28.16 },
 	{ "name": "left hand", "parent": "left arm", "length": 11.52, "x": 35.62, "y": 0.07, "rotation": 2.7 },
-	{ "name": "pelvis", "parent": "hip", "x": 1.41, "y": -6.57 }
+	{ "name": "pelvis", "parent": "hip", "x": 1.41, "y": -6.57 },
+	{ "name": "right limb", "parent": "root", "x": 1.0, "y": 1.0 }
 ],
 "slots": [
 	{ "name": "left shoulder", "bone": "left shoulder", "attachment": "left-shoulder" },
@@ -26,6 +27,7 @@
 	{ "name": "left foot", "bone": "left foot", "attachment": "left-foot" },
 	{ "name": "left lower leg", "bone": "left lower leg", "attachment": "left-lower-leg" },
 	{ "name": "left upper leg", "bone": "left upper leg", "attachment": "left-upper-leg" },
+	{ "name": "pelvis", "bone": "pelvis", "attachment": "pelvis" },
 	{ "name": "right foot", "bone": "right foot", "attachment": "right-foot" },
 	{ "name": "right lower leg", "bone": "right lower leg", "attachment": "right-lower-leg" },
 	{ "name": "right upper leg", "bone": "right upper leg", "attachment": "right-upper-leg" },
@@ -39,17 +41,37 @@
 ],
 
 
+"ik": [
+   {
+      "name": "right limb",
+      "order": 2,
+      "bones": [ "right shoulder", "right arm" ],
+      "target": "right limb",
+      "mix": 0.5,
+      "bendPositive": false,
+      "compress": true
+   },
+   {
+      "name": "left limb",
+      "order": 2,
+      "bones": [ "left shoulder", "left arm" ],
+      "target": "left limb",
+      "mix": 0.5,
+      "bendPositive": false,
+      "compress": true
+   }
+],
 
 "skins": {
 	"default": {
 		"left shoulder": {
-			"left-shoulder": { "x": 63.74, "y": 0.11, "rotation": 62.01, "width": 34, "height": 53 }
+			"left-shoulder": { "x": 23.74, "y": 0.11, "rotation": 62.01, "width": 34, "height": 53 }
 		},
 		"left arm": {
 			"left-arm": { "x": 15.11, "y": -0.44, "rotation": 33.84, "width": 35, "height": 29 }
 		},
 		"left hand": {
-			"left-hand": { "x": 0.75, "y": 1.86, "rotation": 31.14, "width": 35, "height": 38 }
+			"left-hand": { "x": 0.75, "y": 1.86, "rotation": 71.14, "width": 35, "height": 38 }
 		},
 		"left foot": {
 			"left-foot": { "x": 24.35, "y": 8.88, "rotation": 3.32, "width": 65, "height": 30 }
@@ -92,27 +114,8 @@
 
 
 "animations": {
-	"idle":{
-		"bones": {
-			"left upper leg": {
-				"rotate": [
-					{ "time": 0, "angle": -26.55 },
-					{ "time": 0.1333, "angle": -8.78 },
-					{ "time": 0.2666, "angle": 9.51 },
-					{ "time": 0.4, "angle": 30.74 },
-					{ "time": 0.5333, "angle": 25.33 },
-					{ "time": 0.6666, "angle": 26.11 },
-					{ "time": 0.8, "angle": -7.7 },
-					{ "time": 0.9333, "angle": -21.19 },
-					{ "time": 1.0666, "angle": -26.55 }
-				],
-				"translate": [
-					{ "time": 0, "x": -3, "y": -2.25 },
-					{ "time": 0.4, "x": -2.18, "y": -2.25 },
-					{ "time": 1.0666, "x": -3, "y": -2.25 }
-				]
-			}
-		}
+	"idle": {
+	
 	},
 	
 	"walk": {
@@ -311,29 +314,7 @@
 					{ "time": 0.9333, "angle": 0, "curve": "stepped" },
 					{ "time": 1.3666, "angle": 0 }
 				],
-				"translate": [
-					{ "time": 0, "x": -11.57, "y": -3 },
-					{ "time": 0.2333, "x": -16.2, "y": -19.43 },
-					{
-						"time": 0.3333,
-						"x": 7.66,
-						"y": -8.48,
-						"curve": [ 0.057, 0.06, 0.712, 1 ]
-					},
-					{ "time": 0.3666, "x": 15.38, "y": 5.01 },
-					{ "time": 0.4666, "x": -7.84, "y": 57.22 },
-					{
-						"time": 0.6,
-						"x": -10.81,
-						"y": 96.34,
-						"curve": [ 0.241, 0, 1, 1 ]
-					},
-					{ "time": 0.7333, "x": -7.01, "y": 54.7 },
-					{ "time": 0.8, "x": -10.58, "y": 32.2 },
-					{ "time": 0.9333, "x": -31.99, "y": 0.45 },
-					{ "time": 1.0666, "x": -12.48, "y": -29.47 },
-					{ "time": 1.3666, "x": -11.57, "y": -3 }
-				],
+				
 				"scale": [
 					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
 					{ "time": 0.9333, "x": 1, "y": 1, "curve": "stepped" },

@@ -24,7 +24,7 @@ int main()
     bool paused = false;
 
     skeletonJ.setAnimation(animationString, AnimationSet::TransitionType::Immediate);
-    skeletonJ.setScale({-1.0f, 1.0f});
+    //skeletonJ.setScale({-1.0f, 1.0f});
 
     while(window.isOpen())
     {
@@ -78,7 +78,9 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::U)) sstring = "right limb";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "torso";
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) sstring = "hip";
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::N)) sstring = "left upper leg";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::N)) sstring = "board-ik";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) sstring = "neck";
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::T)) sstring = "torso";
 
 
 
@@ -97,7 +99,7 @@ int main()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
         {
             skeletonJ.externalSetTarget(window.mapPixelToCoords(sf::Mouse::getPosition(window)),
-                               sstring, selector,false, true);
+                               sstring, selector,false, true, Skeleton2DBone::RelativeTo::Orthogonal);
 
         }
 

@@ -7,7 +7,7 @@
 
 struct SkeletonNode
 {
-    sf::Vector2f position;
+    sf::Vector2f position = {0.0f, 0.0f};
 
     SkeletonNode() {};
     SkeletonNode(sf::Vector2f _position) :

@@ -222,7 +222,7 @@ void Skeleton2D::animate(float time)
 {
 
     std::vector<BoneAnimation > & currAnimation =
-            animations.getCurrentAnimationData(time);
+            animations.getCurrentAnimationData(time * animationSpeed);
 
     float localAnimTime = animations.getLocalTime();
 

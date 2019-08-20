@@ -56,6 +56,7 @@ class Skeleton2D
     GeneralData generalData;
 
     sf::Vector2f scale = {1.0f, 1.0f};
+    float animationSpeed = 1.0f;
 
     int getParentChildPair(std::string const & parent,
                            std::string const & child);
@@ -128,6 +129,8 @@ public:
 
     void setGeneralData(GeneralData _generalData) { generalData = _generalData; };
     GeneralData getGeneralData() { return generalData; };
+
+    void setAnimationSpeed(float _speed) { animationSpeed = _speed; }
 };
 
 

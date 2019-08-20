@@ -11,7 +11,7 @@ int main()
     currView.setCenter(0.0f, 0.0f);
     window.setView(currView);
 
-    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("spineboy-pro.json");
+    Skeleton2D skeletonJ = JSONSkeletonReader::readFromFile("example3.json");
 
     int selector = 2;
     std::string sstring = "root";

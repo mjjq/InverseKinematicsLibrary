@@ -1,4 +1,6 @@
 {
+"skeleton" : {"images" : "./example/"},
+
 "bones": [
 	{ "name": "root" },
 	{ "name": "hip", "parent": "root", "x": 0.64, "y": 14.41 },
@@ -43,22 +45,16 @@
 
 "ik": [
    {
-      "name": "right limb",
-      "order": 2,
+      "name": "right limb2",
+      "order": 0,
       "bones": [ "right shoulder", "right arm" ],
-      "target": "right limb",
-      "mix": 0.5,
-      "bendPositive": false,
-      "compress": true
+      "target": "right limb"
    },
    {
-      "name": "left limb",
-      "order": 2,
+      "name": "left limb2",
+      "order": 1,
       "bones": [ "left shoulder", "left arm" ],
-      "target": "left limb",
-      "mix": 0.5,
-      "bendPositive": false,
-      "compress": true
+      "target": "left limb"
    }
 ],
 
@@ -99,6 +95,9 @@
 		},
 		"head": {
 			"head": { "x": 53.94, "y": -5.75, "rotation": -86.9, "width": 121, "height": 132 }
+		},
+		"eyes": {
+			"eyes": { "x": 28.94, "y": -32.92, "rotation": -86.9, "width": 34, "height": 27 }
 		},
 		"right shoulder": {
 			"right-shoulder": { "x": 25.86, "y": 0.03, "rotation": 134.44, "width": 52, "height": 51 }

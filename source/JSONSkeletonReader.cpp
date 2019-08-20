@@ -29,6 +29,8 @@ Skeleton2D JSONSkeletonReader::readFromFile(std::string const & filename, float 
 
         if(!j["skins"].is_null()) parseSkinData(j, skeleton);
 
+        if(!j["skeleton"].is_null()) parseGeneralData(j, skeleton);
+
         return skeleton;
     }
 
@@ -173,4 +175,17 @@ void JSONSkeletonReader::parseSkinData(nlohmann::json const & j,
             skeleton.addSkin(data);
         }
     }
+}
+
+void JSONSkeletonReader::parseGeneralData(nlohmann::json const & j,
+                                          Skeleton2D & skeleton)
+{
+    GeneralData data;
+
+    auto currJ = j["skeleton"];
+
+    data.imageSubfolder = currJ.value("images", "");
+    data.audioSubfolder = currJ.value("audio", "");
+
+    skeleton.setGeneralData(data);
 }

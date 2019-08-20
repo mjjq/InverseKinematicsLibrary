@@ -12,6 +12,12 @@
 #include <assert.h>
 #include "Math.h"
 
+struct GeneralData
+{
+    std::string imageSubfolder;
+    std::string audioSubfolder;
+};
+
 struct IKConstraintData
 {
     std::string name;
@@ -47,6 +53,7 @@ class Skeleton2D
     AnimationSet animations;
     std::vector<SlotData > slots;
     std::vector<SkinData > skins;
+    GeneralData generalData;
 
     sf::Vector2f scale = {1.0f, 1.0f};
 
@@ -119,6 +126,8 @@ public:
                    bool inheritOrientation = true,
                    Skeleton2DBone::RelativeTo relativeTo = Skeleton2DBone::RelativeTo::World);
 
+    void setGeneralData(GeneralData _generalData) { generalData = _generalData; };
+    GeneralData getGeneralData() { return generalData; };
 };
 
 
